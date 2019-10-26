@@ -12,8 +12,6 @@
     
     <header>
         <p>GoodMovies Inc.</p>
-        <p>Movies</p>
-        
     </header>
 
     <nav>
@@ -62,12 +60,87 @@
                     </table>
                   </div>
     </main>
-    <section>
-        <input type="button" value="Add">
-        <input type="button" value="Delete">
-        <input type="button" value="Update">
 
+    <section>
+
+    <div id="openAddButton">
+        <button class="button">
+            <strong>Add</strong>
+        </button>
+    </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            
+            <div id="addPopup">
+                    <div class="form-popup" id="popupForm">
+                        <form action="/python/addForm.py" class="form-container">
+                            <h2>Add a movie</h2>
+                            <label for = "Title">Title</label>
+                            <input type="text" id="Title" placeholder="enter title" name="Title" required>
+                            <label for = "Rating">Rating</label>
+                            <input type="text" id="Rating" placeholder="enter rating" name="Rating">
+                            <label for = "Genre">Genre</label>
+                            <input type="text" id="Genre" placeholder="enter Genre" name="Genre">
+                            <label for = "RunTime">Run Time</label>
+                            <input type="text" id="RunTime" placeholder="enter total run time in minutes" name="RunTime" required>
+                            <button type="submit" class="button">OK</button>
+                        </form>
+                    </div>
+                </div>
+
+        </div>
+
+    </div>
+   
+    <script>
+        // Get the modal
+        var modal = document.getElementById("addModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("openAddButton");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        
+        // When the user clicks on the button, open the modal
+        btn.onclick = function() {
+          modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+          modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+          if (event.target == modal) {
+            modal.style.display = "none";
+          }
+}
+    </script>
+
+    <div id="openUpdateForm">
+        <button class="button" onclick="openForm()">
+            <strong>Update</strong>
+        </button>
+    </div>
+
+
+    <div id="openDeletForm">
+        <button class="button" onclick="openForm()">
+                <strong>Delete</strong>
+            </button>
+    </div>    
+        
     </section>
+
+    <form>
+
+
+    </form>
 
     <footer>Thank you for using GoodMovies Inc!</footer>
 
