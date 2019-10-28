@@ -29,7 +29,7 @@
             <div class="tableFixHead">
                 <table>
                     <thead>
-                        <tr>Customers</tr>
+                        <tr>Movies</tr>
                         <tr>
                             <th>TH 1</th>
                             <th>TH 2</th>
@@ -285,6 +285,8 @@
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
                                 <h2>Update Information</h2>
+                                <label for="MovieID">MovieID</label>
+                                <input type="text" id="MovieID" placeholder="enter movie id" name="MovieID" required>
                                 <label for="Title">Title</label>
                                 <input type="text" id="Title" placeholder="enter title" name="Title" required>
                                 <label for="Rating">Rating</label>
@@ -355,6 +357,8 @@
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
                                 <h2>Are you sure you want to delete?</h2>
+                                <label for="MovieID">MovieID</label>
+                                <input type="text" id="MovieID" placeholder="enter movie id" name="MovieID" required>
                                 <button type="submit" class="button" onclick="noDeleteFunction()">Yes</button>
                                 <button type="submit" id="deleteClose" class="button">No</button>
                             </form>

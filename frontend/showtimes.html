@@ -214,13 +214,13 @@
                     <div id="addPopup">
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
-                                <h2>Add a movie</h2>
-                                <label for="Title">Title</label>
-                                <input type="text" id="Title" placeholder="enter title" name="Title" required>
-                                <label for="Rating">Rating</label>
-                                <input type="text" id="Rating" placeholder="enter rating" name="Rating">
-                                <label for="Genre">Genre</label>
-                                <input type="text" id="Genre" placeholder="enter Genre" name="Genre">
+                                <h2>Add a showtime</h2>
+                                <label for="Time">Time</label>
+                                <input type="text" id="Time" placeholder="enter time" name="Time">
+                                <label for="MovieID">MovieID</label>
+                                <input type="text" id="MovieID" placeholder="enter movie id" name="MovieID">
+                                <label for="RoomID">RoomID</label>
+                                <input type="text" id="RoomID" placeholder="enter room id" name="RoomID">
                                 <label for="RunTime">Run Time</label>
                                 <input type="text" id="RunTime" placeholder="enter total run time in minutes"
                                     name="RunTime" required>
@@ -284,16 +284,16 @@
                     <div id="updatePopup">
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
-                                <h2>Update Information</h2>
-                                <label for="Showtime ID">Movie Id</label>
-                                <input type="text" id="Showtime ID" placeholder="enter movie id" name="Movie Id"
+                                <h2>Update a showtime</h2>
+                                <label for="ShowtimeID">ShowtimeID</label>
+                                <input type="text" id="ShowtimeID" placeholder="enter showing id" name="ShowtimeID"
                                     required>
-                                <label for="Title">Title</label>
-                                <input type="text" id="Title" placeholder="enter title" name="Title" required>
-                                <label for="Rating">Rating</label>
-                                <input type="text" id="Rating" placeholder="enter rating" name="Rating">
-                                <label for="Genre">Genre</label>
-                                <input type="text" id="Genre" placeholder="enter Genre" name="Genre">
+                                <label for="Time">Time</label>
+                                <input type="text" id="Time" placeholder="enter time" name="Time">
+                                <label for="MovieID">MovieID</label>
+                                <input type="text" id="MovieID" placeholder="enter movie id" name="MovieID">
+                                <label for="RoomID">RoomID</label>
+                                <input type="text" id="RoomID" placeholder="enter room id" name="RoomID">
                                 <label for="RunTime">Run Time</label>
                                 <input type="text" id="RunTime" placeholder="enter total run time in minutes"
                                     name="RunTime" required>
@@ -358,6 +358,9 @@
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
                                 <h2>Are you sure you want to delete?</h2>
+                                <label for="ShowtimeID">ShowtimeID</label>
+                                <input type="text" id="ShowtimeID" placeholder="enter showing id" name="ShowtimeID"
+                                    required>
                                 <button type="submit" class="button" onclick="noDeleteFunction()">Yes</button>
                                 <button type="submit" id="deleteClose" class="button">No</button>
                             </form>

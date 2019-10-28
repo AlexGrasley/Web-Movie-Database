@@ -29,7 +29,7 @@
             <div class="tableFixHead">
                 <table>
                     <thead>
-                        <tr>Rooms</tr>
+                        <tr>Tickets</tr>
                         <tr>
                             <th>TH 1</th>
                             <th>TH 2</th>
@@ -214,19 +214,15 @@
                     <div id="addPopup">
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
-                                <h2>Add a movie</h2>
-                                <label for="Title">Title</label>
-                                <input type="text" id="Title" placeholder="enter title" name="Title" required>
-                                <label for="Rating">Rating</label>
-                                <input type="text" id="Rating" placeholder="enter rating" name="Rating">
-                                <label for="Genre">Genre</label>
-                                <input type="text" id="Genre" placeholder="enter Genre" name="Genre">
-                                <label for="RunTime">Run Time</label>
-                                <input type="text" id="RunTime" placeholder="enter total run time in minutes"
-                                    name="RunTime" required>
+                                <h2>Add a ticket</h2>
+                                <label for="Price">Price</label>
+                                <input type="number" id="Price" placeholder="enter price" name="Price" required>
+                                <label for="ShowingID">ShowingID</label>
+                                <input type="text" id="ShowingID" placeholder="enter showing id" name="ShowingID">
+                                <label for="CustomerID">CustomerID</label>
+                                <input type="text" id="CustomerID" placeholder="enter customer id" name="CustomerID">
                                 <button type="submit" class="button" onclick="noAddFunction()">OK</button>
                                 <button type="submit" class="button" id="addaClose">Close</button>
-
                             </form>
                         </div>
                     </div>
@@ -285,8 +281,8 @@
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
                                 <h2>Update Information</h2>
-                                <label for="RoomID">Room Id</label>
-                                <input type="text" id="RoomID" placeholder="enter room id" name="Room Id" required>
+                                <label for="TicketID">TicketID</label>
+                                <input type="text" id="TicketID" placeholder="enter ticket id" name="TicketID" required>
                                 <label for="Title">Title</label>
                                 <input type="text" id="Title" placeholder="enter title" name="Title" required>
                                 <label for="Rating">Rating</label>

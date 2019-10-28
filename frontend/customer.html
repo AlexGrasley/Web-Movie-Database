@@ -29,7 +29,7 @@
             <div class="tableFixHead">
                 <table>
                     <thead>
-                        <tr>Tickets</tr>
+                        <tr>Customers</tr>
                         <tr>
                             <th>TH 1</th>
                             <th>TH 2</th>
@@ -214,18 +214,18 @@
                     <div id="addPopup">
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
-                                <h2>Add a movie</h2>
-                                <label for="Title">Title</label>
-                                <input type="text" id="Title" placeholder="enter title" name="Title" required>
-                                <label for="Rating">Rating</label>
-                                <input type="text" id="Rating" placeholder="enter rating" name="Rating">
-                                <label for="Genre">Genre</label>
-                                <input type="text" id="Genre" placeholder="enter Genre" name="Genre">
-                                <label for="RunTime">Run Time</label>
-                                <input type="text" id="RunTime" placeholder="enter total run time in minutes"
-                                    name="RunTime" required>
+                                <h2>Add a customer</h2>
+                                <label for="FirstName">FirstName</label>
+                                <input type="text" id="FirstName" placeholder="enter first name" name="FirstName"
+                                    required>
+                                <label for="LastName">LastName</label>
+                                <input type="text" id="LastName" placeholder="enter last name" name="LastName" required>
+                                <label for="Birthday">Birthday</label>
+                                <input type="text" id="Birthday" placeholder="enter birthday `YYYY-MM-DD`"
+                                    name="Birthday" required>
                                 <button type="submit" class="button" onclick="noAddFunction()">OK</button>
                                 <button type="submit" class="button" id="addaClose">Close</button>
+
                             </form>
                         </div>
                     </div>
@@ -283,16 +283,18 @@
                     <div id="updatePopup">
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
-                                <h2>Update Information</h2>
-                                <label for="Title">Title</label>
-                                <input type="text" id="Title" placeholder="enter title" name="Title" required>
-                                <label for="Rating">Rating</label>
-                                <input type="text" id="Rating" placeholder="enter rating" name="Rating">
-                                <label for="Genre">Genre</label>
-                                <input type="text" id="Genre" placeholder="enter Genre" name="Genre">
-                                <label for="RunTime">Run Time</label>
-                                <input type="text" id="RunTime" placeholder="enter total run time in minutes"
-                                    name="RunTime" required>
+                                <h2>Update Customer</h2>
+                                <label for="CustomerID">CustomerID</label>
+                                <input type="text" id="CustomerID" placeholder="enter customer id" name="CustomerID"
+                                    required>
+                                <label for="FirstName">FirstName</label>
+                                <input type="text" id="FirstName" placeholder="enter first name" name="FirstName"
+                                    required>
+                                <label for="LastName">LastName</label>
+                                <input type="text" id="LastName" placeholder="enter last name" name="LastName" required>
+                                <label for="Birthday">Birthday</label>
+                                <input type="text" id="Birthday" placeholder="enter birthday `YYYY-MM-DD`"
+                                    name="Birthday" required>
                                 <button type="submit" class="button" onclick="noUpdateFunction()">Update</button>
                                 <button type="submit" class="button" id="updateClose">Close</button>
                             </form>
@@ -354,6 +356,9 @@
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
                                 <h2>Are you sure you want to delete?</h2>
+                                <label for="CustomerID">CustomerID</label>
+                                <input type="text" id="CustomerID" placeholder="enter customer id" name="CustomerID"
+                                    required>
                                 <button type="submit" class="button" onclick="noDeleteFunction()">Yes</button>
                                 <button type="submit" id="deleteClose" class="button">No</button>
                             </form>
