@@ -15,12 +15,12 @@
     </header>
 
     <nav>
-        <a href="/Index.html">Movies</a>
-        <a href="/showtimes.html">Show Times</a>
-        <a href="/tickets.html">Tickets</a>
-        <a href="/theatres.html">Theatres</a>
-        <a href="/rooms.html">Rooms</a>
-        <a href="/customer.html">Customer</a>
+        <a href="/~grasleal/Index.html">Movies</a>
+        <a href="/~grasleal/showtimes.html">Show Times</a>
+        <a href="/~grasleal/tickets.html">Tickets</a>
+        <a href="/~grasleal/theatres.html">Theatres</a>
+        <a href="/~grasleal/rooms.html">Rooms</a>
+        <a href="/~grasleal/customer.html">Customer</a>
     </nav>
 
     <main>
@@ -89,6 +89,8 @@
                             <label for = "RunTime">Run Time</label>
                             <input type="text" id="RunTime" placeholder="enter total run time in minutes" name="RunTime" required>
                             <button type="submit" class="button" onclick="noAddFunction()">OK</button>
+                            <button type="submit" class="button" id="addaClose">Close</button>
+
                         </form>
                     </div>
                 </div>
@@ -104,6 +106,8 @@
 
         // Get the <span> element that closes the modal
         var addspan = document.getElementsByClassName("close")[0];
+
+        var addCloseBut = document.getElementById("addaClose");
         
         // When the user clicks on the button, open the modal
         addbtn.onclick = function() {
@@ -114,6 +118,10 @@
         addspan.onclick = function() {
             addModal.style.display = "none";
         }
+
+        addCloseBut.onclick = function() {
+                    addModal.style.display = "none";
+                }
 
         // When the user clicks anywhere outside of the modal, close it
         window.onclick = function(event) {
@@ -149,7 +157,8 @@
                                 <input type="text" id="Genre" placeholder="enter Genre" name="Genre">
                                 <label for = "RunTime">Run Time</label>
                                 <input type="text" id="RunTime" placeholder="enter total run time in minutes" name="RunTime" required>
-                                <button type="submit" class="button" onclick="noUpdateFunction()">OK</button>
+                                <button type="submit" class="button" onclick="noUpdateFunction()">Update</button>
+                                <button type="submit" class="button" id="updateClose">Close</button>
                             </form>
                         </div>
                     </div>
@@ -165,6 +174,8 @@
         
                 // Get the <span> element that closes the modal
                 var updatespan = document.getElementsByClassName("close")[0];
+
+                var updatecloseBut = document.getElementById("updateClose");
                 
                 // When the user clicks on the button, open the modal
                 updatebtn.onclick = function() {
@@ -173,6 +184,10 @@
         
                 // When the user clicks on <span> (x), close the modal
                 updatespan.onclick = function() {
+                    updateModal.style.display = "none";
+                }
+
+                updatecloseBut.onclick = function() {
                     updateModal.style.display = "none";
                 }
         
@@ -201,10 +216,10 @@
                 
                 <div id="deletePopup">
                         <div class="form-popup" id="popupForm">
-                            <form action=" " class="form-container">
+                            <form action="" class="form-container">
                                 <h2>Are you sure you want to delete?</h2>
                                 <button type="submit" class="button" onclick="noDeleteFunction()">Yes</button>
-                                <button type="submit" id ="close" class="button">No</button>
+                                <button type="submit" id ="deleteClose" class="button">No</button>
                             </form>
                         </div>
                     </div>
@@ -220,6 +235,8 @@
         
                 // Get the <span> element that closes the modal
                 var deletespan = document.getElementsByClassName("close")[0];
+
+                var deletecloseBut = document.getElementById("deleteClose");
                 
                 // When the user clicks on the button, open the modal
                 deletebtn.onclick = function() {
