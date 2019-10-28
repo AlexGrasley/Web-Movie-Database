@@ -9,18 +9,18 @@
 
 
 <div id="content">
-    
+
     <header>
         <p>GoodMovies Inc.</p>
     </header>
 
     <nav>
-        <a href="/~grasleal/Index.html">Movies</a>
-        <a href="/~grasleal/showtimes.html">Show Times</a>
-        <a href="/~grasleal/tickets.html">Tickets</a>
-        <a href="/~grasleal/theatres.html">Theatres</a>
-        <a href="/~grasleal/rooms.html">Rooms</a>
-        <a href="/~grasleal/customer.html">Customer</a>
+        <a href="./Index.html">Movies</a>
+        <a href="./showtimes.html">Show Times</a>
+        <a href="./tickets.html">Tickets</a>
+        <a href="./theatres.html">Theatres</a>
+        <a href="./rooms.html">Rooms</a>
+        <a href="./customer.html">Customer</a>
     </nav>
 
     <main>
@@ -58,7 +58,7 @@
                         <tr><td>A1</td><td>A2</td><td>A3</td><td>A4</td><td>A5</td><td>A6</td></tr>
                         <tr><td>A1</td><td>A2</td><td>A3</td><td>A4</td><td>A5</td><td>A6</td></tr>
                         <tr><td>A1</td><td>A2</td><td>A3</td><td>A4</td><td>A5</td><td>A6</td></tr>
-                
+
                       </tbody>
                     </table>
                   </div>
@@ -75,7 +75,7 @@
     <div id="addModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            
+
             <div id="addPopup">
                     <div class="form-popup" id="popupForm">
                         <form action="" class="form-container">
@@ -96,7 +96,7 @@
                 </div>
         </div>
     </div>
-   
+
     <script>
         // Get the modal
         var addModal = document.getElementById("addModal");
@@ -108,7 +108,7 @@
         var addspan = document.getElementsByClassName("close")[0];
 
         var addCloseBut = document.getElementById("addaClose");
-        
+
         // When the user clicks on the button, open the modal
         addbtn.onclick = function() {
           addModal.style.display = "block";
@@ -144,7 +144,7 @@
     <div id="updateModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                
+
                 <div id="updatePopup">
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
@@ -168,20 +168,20 @@
         <script>
                 // Get the modal
                 var updateModal = document.getElementById("updateModal");
-        
+
                 // Get the button that opens the modal
                 var updatebtn = document.getElementById("openUpdateForm");
-        
+
                 // Get the <span> element that closes the modal
                 var updatespan = document.getElementsByClassName("close")[0];
 
                 var updatecloseBut = document.getElementById("updateClose");
-                
+
                 // When the user clicks on the button, open the modal
                 updatebtn.onclick = function() {
                     updateModal.style.display = "block";
                 }
-        
+
                 // When the user clicks on <span> (x), close the modal
                 updatespan.onclick = function() {
                     updateModal.style.display = "none";
@@ -190,7 +190,7 @@
                 updatecloseBut.onclick = function() {
                     updateModal.style.display = "none";
                 }
-        
+
                 // When the user clicks anywhere outside of the modal, close it
                 window.onclick = function(event) {
                   if (event.target == modal) {
@@ -208,12 +208,12 @@
         <button class="button">
                 <strong>Delete</strong>
             </button>
-    </div> 
-    
+    </div>
+
     <div id="deleteModal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                
+
                 <div id="deletePopup">
                         <div class="form-popup" id="popupForm">
                             <form action="" class="form-container">
@@ -229,15 +229,15 @@
         <script>
                 // Get the modal
                 var deleteModal = document.getElementById("deleteModal");
-        
+
                 // Get the button that opens the modal
                 var deletebtn = document.getElementById("openDeleteForm");
-        
+
                 // Get the <span> element that closes the modal
                 var deletespan = document.getElementsByClassName("close")[0];
 
                 var deletecloseBut = document.getElementById("deleteClose");
-                
+
                 // When the user clicks on the button, open the modal
                 deletebtn.onclick = function() {
                     deleteModal.style.display = "block";
@@ -246,12 +246,12 @@
                 deletecloseBut.onclick = function() {
                     deleteModal.style.display = "none";
                 }
-        
+
                 // When the user clicks on <span> (x), close the modal
                 deletespan.onclick = function() {
                     deleteModal.style.display = "none";
                 }
-        
+
                 // When the user clicks anywhere outside of the modal, close it
                 window.onclick = function(event) {
                   if (event.target == modal) {
@@ -263,7 +263,7 @@
                    alert("delete functionality not implemented");
                 }
             </script>
-        
+
     </section>
 
     <form>
@@ -273,6 +273,6 @@
 
     <footer>Thank you for using GoodMovies Inc!</footer>
 
-</div> 
+</div>
 </body>
 </html>
