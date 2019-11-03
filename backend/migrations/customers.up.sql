@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS `goodmovies`.`customers` (
-  `customer_id` int(16) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS `customers` (
+  `customer_id` INT(16) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `fname` VARCHAR(255),
   `lname` VARCHAR(255),
   `birthday` DATE
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+) ENGINE = INNODB DEFAULT CHARSET = utf8;
