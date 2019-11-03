@@ -1,0 +1,8 @@
+http://web.engr.oregonstate.edu/~grasleal/index.html?
+
+The index page shows all movies in our DB with the ability to add movies to the list, update the information for a movie in the table, and delete a movie.
+
+The other pages will show the contents of their respective tables, showings, Tickets, Theatres, Rooms, and Customers. Each will provide similar functionality as the Movie table has through index.html.
+
+
+
