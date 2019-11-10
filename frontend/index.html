@@ -385,7 +385,7 @@
                                             <div class="tab-pane fade show active" id="ManageTheaters">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Select a Theater: <select class="form-control-sm" name="Theatre">Find Theater</select>
+                                                    Select a Theater: <input class="form-control-sm" type="text" name="Theatre">Find Theater</select>
                                                                    <input class="form-control-sm" type="button" value="Search">
                                                                    <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteTheaterModal">
                                                                    <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addTheaterModal">
@@ -848,6 +848,7 @@
                                                                 <th>Movie</th>                                                                
                                                                 <th>Customer Name</th>                                                                
                                                                 <th>Show Time</th>                                                                
+                                                                <th>Price</th>                                                                
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -858,6 +859,7 @@
                                                                 <td>{{tickets.Movie}}</td>
                                                                 <td>{{tickets.CustomerName}}</td>
                                                                 <td>{{tickets.ShowTime}}</td>
+                                                                <td>{{tickets.Price}}</td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -872,7 +874,6 @@
                                                 <div class="col-sm-2">
                                                     <form>
                                                     Select a Theater: <select class="form-control-sm" name="Theatre">Find Theatre</select>
-                                                    Find a Room: <select class="form-control-sm" name="Customer">Find Room</select>
                                                                    <input class="form-control-sm" type="button" value="Search">
                                                                    <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteRoomModal">
                                                                    <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addRoomModal">
@@ -996,11 +997,12 @@
                                             <div class="tab-pane fade show active" id="ManageCustomers">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Find Customer: <select class="form-control-sm" name="Customer">Find Customer</select>
-                                                                   <input class="form-control-sm" type="button" value="Search">
-                                                                   <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteCustomerModal">
-                                                                   <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addCustomerModal">
-                                                                   <input class="form-control-sm" type="button" value="Edit" data-toggle="modal" data-target="#editCustomerModal">
+                                                    Last Name:  <input class="form-control-sm" type="text" id="CustomerLName">
+                                                    First Name: <input class="form-control-sm" type="text" id="CustomerFName">
+                                                                <input class="form-control-sm" type="button" value="Search">
+                                                                <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteCustomerModal">
+                                                                <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addCustomerModal">
+                                                                <input class="form-control-sm" type="button" value="Edit" data-toggle="modal" data-target="#editCustomerModal">
                                                     </form>
                                                 </div>
 
