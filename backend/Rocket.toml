@@ -1,0 +1,2 @@
+[global.databases]
+mariadb = { url = "mysql://root:root@localhost:3306" }
