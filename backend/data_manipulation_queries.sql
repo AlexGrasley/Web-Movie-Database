@@ -117,28 +117,28 @@ WHERE customers.LName LIKE CONCAT("%",@LName,"%") -- @LName will default to blan
 
 -- Insert
 
-INSERT INTO customers (`fname`, `lname`, `birthday`) VALUES (?, ?, ?)
-INSERT INTO movies (`name`, `rating`, `genre`, `length`) VALUES (?, ?, ?, ?)
-INSERT INTO rooms (`capacity`, `theater_id`) VALUES (?, ?)
-INSERT INTO showings (`time`, `movie_id`, `room_id`) VALUES (?, ?, ?)
-INSERT INTO theaters (`name`, `address`, `address_two`, `city`, `state`, `zip`) VALUES (?, ?, ?, ?, ?, ?)
-INSERT INTO tickets (`price`, `showing_id`, `customer_id`) VALUES (?, ?, ?)
+INSERT INTO customers (`fname`, `lname`, `birthday`) VALUES (@FName, @LName, @Birthday)
+INSERT INTO movies (`name`, `rating`, `genre`, `length`) VALUES (@Name, @Rating, @Genre, @Length)
+INSERT INTO rooms (`capacity`, `theater_id`) VALUES (@Capacity, @TheaterID)
+INSERT INTO showings (`time`, `movie_id`, `room_id`) VALUES (@Time, @MovieID, @RoomID)
+INSERT INTO theaters (`name`, `address`, `address_two`, `city`, `state`, `zip`) VALUES (@Name, @Address, @AddressTwo, @City, @State, @Zip)
+INSERT INTO tickets (`price`, `showing_id`, `customer_id`) VALUES (@Price, @ShowingID, @CustomerID)
 
 
 -- Update
 
-UPDATE customers SET `fname` = ?, `lname` = ?, `birthday` = ? WHERE `customer_id` = ?;
-UPDATE movies SET `name` = ?, `rating` = ?, `genre` = ?, `length` = ? WHERE `movie_id` = ?;
-UPDATE rooms SET `capacity` = ?, `theater_id` = ? WHERE `room_id` = ?;
-UPDATE showings SET `time` = ?, `movie_id` = ?, `room_id` = ? WHERE `showing_id` = ?;
-UPDATE theaters SET `name` = ?, `address` = ?, `address_two` = ?,`city` = ?,`state` = ?,`zip` = ? WHERE `theater_id` = ?;
-UPDATE tickets SET `price` = ?, `showing_id` = ?, `customer_id` = ? WHERE `ticket_id` = ?;
+UPDATE customers SET `fname` = @FName, `lname` = @LName, `birthday` = @Birthday WHERE `customer_id` = @CustomerID;
+UPDATE movies SET `name` = @Name, `rating` = @Rating, `genre` = @Genre, `length` = @Length WHERE `movie_id` = @MovieID;
+UPDATE rooms SET `capacity` = @Capacity, `theater_id` = @TheaterID WHERE `room_id` = @RoomID;
+UPDATE showings SET `time` = @Time, `movie_id` = @MovieID, `room_id` = @RoomID WHERE `showing_id` = @ShowingID;
+UPDATE theaters SET `name` = @Name, `address` = @Address, `address_two` = @AddressTwo,`city` = @City,`state` = @State,`zip` = @Zip WHERE `theater_id` = @TheaterID;
+UPDATE tickets SET `price` = @Price, `showing_id` = @ShowingID, `customer_id` = @CustomerID WHERE `ticket_id` = @TicketID;
 
 -- Delete
 
-DELETE customers WHERE `customer_id` = ?;
-DELETE movies WHERE `movie_id` = ?;
-DELETE rooms WHERE `room_id` = ?;
-DELETE showings WHERE `showing_id` = ?;
-DELETE theaters WHERE `theater_id` = ?;
-DELETE tickets WHERE `ticket_id` = ?;
+DELETE FROM customers WHERE `customer_id` = @CustomerID;
+DELETE FROM movies WHERE `movie_id` = @MovieID;
+DELETE FROM rooms WHERE `room_id` = @RoomID;
+DELETE FROM showings WHERE `showing_id` = @ShowingID;
+DELETE FROM theaters WHERE `theater_id` = @TheaterID;
+DELETE FROM tickets WHERE `ticket_id` = @TicketID;
