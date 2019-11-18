@@ -55,7 +55,6 @@ pub fn insert_theater_handler(
         .prep_exec(
             INSERT_THEATER,
             params! {
-                "theater_id" => &theater.theater_id,
                 "name" => &theater.name,
                 "address" => &theater.address,
                 "address_two" => &theater.address_two,

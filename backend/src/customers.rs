@@ -36,7 +36,6 @@ pub fn select_customer_by_id(conn: &mut DBConn, id: u64) -> Result<Customer, u64
 
             let mut customers = results.into_iter();
             customers.next().into_result().map_err(|_| 404)
-            // Ok(Json(customer))
         }
         Err(_) => Err(400),
     }

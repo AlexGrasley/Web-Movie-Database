@@ -1,9 +1,7 @@
 use chrono::{NaiveDate, NaiveDateTime};
-// use mysql::prelude::ConvIr;
 use mysql::prelude::*;
 use mysql::Value;
-use mysql_common::value::convert::FromValue;
-use mysql_common::value::convert::FromValueError;
+use mysql_common::value::convert::{FromValue, FromValueError};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -24,28 +22,26 @@ pub enum Rating {
     Unrated,
 }
 
-pub struct RatingIr {
-    dat: String,
-}
+pub struct RatingIr(&'static str);
 
 impl ConvIr<Rating> for RatingIr {
     fn new(v: Value) -> Result<RatingIr, FromValueError> {
         match v {
-            Value::Bytes(bytes) => match String::from_utf8(bytes.clone()) {
-                Ok(s) if s == "E" || s == "PG" || s == "PG13" || s == "R" || s == "AO" => {
-                    Ok(RatingIr { dat: s })
-                }
-                Ok(_) | Err(_) => Err(FromValueError(Value::Bytes(bytes))),
+            Value::Bytes(bytes) => match bytes {
+                s if s == b"E" => Ok(RatingIr("E")),
+                s if s == b"PG" => Ok(RatingIr("PG")),
+                s if s == b"PG13" => Ok(RatingIr("PG13")),
+                s if s == b"R" => Ok(RatingIr("R")),
+                s if s == b"AO" => Ok(RatingIr("AO")),
+                _ => Err(FromValueError(Value::Bytes(bytes))),
             },
-            Value::NULL => Ok(RatingIr {
-                dat: "NULL".to_string(),
-            }),
+            Value::NULL => Ok(RatingIr("NULL")),
             v => Err(FromValueError(v)),
         }
     }
 
     fn commit(self) -> Rating {
-        match self.dat.as_str() {
+        match self.0 {
             "E" => Rating::E,
             "PG" => Rating::PG,
             "PG13" => Rating::PG13,
@@ -57,7 +53,7 @@ impl ConvIr<Rating> for RatingIr {
     }
 
     fn rollback(self) -> Value {
-        Value::Bytes(self.dat.into_bytes())
+        Value::Bytes(self.0.as_bytes().to_vec())
     }
 }
 
@@ -87,12 +83,14 @@ pub struct Movie {
     // minutes
     pub length: u64,
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Room {
     pub room_id: Option<u64>,
     pub capacity: u32,
     pub theater_id: u64,
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Showing {
     pub showing_id: Option<u64>,
@@ -100,16 +98,18 @@ pub struct Showing {
     pub movie_id: u64,
     pub room_id: u64,
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Theater {
     pub theater_id: Option<u64>,
-    pub name: Option<String>,
+    pub name: String,
     pub address: Option<String>,
     pub address_two: Option<String>,
     pub city: Option<String>,
     pub state: Option<String>,
     pub zip: Option<String>,
 }
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Ticket {
     pub ticket_id: Option<u64>,

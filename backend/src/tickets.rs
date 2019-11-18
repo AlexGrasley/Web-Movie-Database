@@ -51,7 +51,6 @@ pub fn insert_ticket_handler(
         .prep_exec(
             INSERT_TICKET,
             params! {
-                "ticket_id" => &ticket.ticket_id,
                 "price" => &ticket.price,
                 "showing_id" => &ticket.showing_id,
                 "customer_id" => &ticket.customer_id,

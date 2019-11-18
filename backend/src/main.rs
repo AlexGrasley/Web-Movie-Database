@@ -13,7 +13,6 @@ mod tickets;
 use mysql;
 use rocket::{self, get, routes};
 use rocket_contrib::database;
-// use rocket_contrib::json::Json;
 
 use customers::*;
 use movies::*;

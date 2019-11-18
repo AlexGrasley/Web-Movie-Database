@@ -37,7 +37,6 @@ pub fn select_movie_by_id(conn: &mut DBConn, id: u64) -> Result<Movie, u64> {
 
             let mut movies = results.into_iter();
             movies.next().into_result().map_err(|_| 404)
-            // Ok(Json(movie))
         }
         Err(_) => Err(400),
     }
