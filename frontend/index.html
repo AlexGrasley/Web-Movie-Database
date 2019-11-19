@@ -1,3 +1,5 @@
+<!--This one is on the eng server.-->
+
 <html>
 
 
@@ -5,8 +7,6 @@
     
         <!--Get datatables CSS files needed for table styling-->
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/zf-6.4.3/jq-3.3.1/dt-1.10.20/b-1.6.1/sl-1.3.1/datatables.min.css"/>
-        <!--get datatables JS and jQuery libraries needed-->
-        <script type="text/javascript" src="https://cdn.datatables.net/v/zf-6.4.3/jq-3.3.1/dt-1.10.20/b-1.6.1/sl-1.3.1/datatables.min.js"></script> 
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <!-- jQuery library -->
@@ -15,21 +15,24 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+        <!--get datatables JS and jQuery libraries needed-->
+        <script type="text/javascript" src="https://cdn.datatables.net/v/zf-6.4.3/jq-3.3.1/dt-1.10.20/b-1.6.1/sl-1.3.1/datatables.min.js"></script> 
+        
+        <!-- Scripts for sending data to back end-->
+        <script type="text/javascript" src="./scripts/getdata.js"></script>
+        <script type="text/javascript" src="./scripts/senddata.js"></script>
+
         
     
     <!--start dataTable table.-->
-    <script type="text/javascript">
+<script> $( window ).on("load", setupMovies);</script>
+<script> $( window ).on("load", setupShowings);</script>
+
+
+
+
     
-            $(document).ready( function () {
-                $('table_id').datatable({
-                    scrollY: 300,
-                    paging: false,
-                    stateSave: true,
-                    select: 'single'
-                    }
-                );
-            } );
-    </script>      
 </head>
 
 
@@ -61,7 +64,7 @@
                         
                         <p>Browse Movies</p>
                         
-                        <table id="table_id" class="display">
+                        <table id="moviesTable" class="display">
                                 <thead>
                                     <tr>
                                         <th>MovieID</th>
@@ -71,16 +74,6 @@
                                         <th>Run Time</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    {% for movies in Movies %}
-                                    <tr>
-                                        <td>{{movies.movieID}}</td>
-                                        <td>{{movies.name}}</td>
-                                        <td>{{movies.rating}}</td>
-                                        <td>{{movies.genre}}</td>
-                                        <td>{{movies.length}}</td>
-                                    </tr>
-                                </tbody>
                             </table>
                     </article>
                 </div>
@@ -93,14 +86,14 @@
                                         <p>Find Show Times and Buy Tickets</p>
                                         <div class="col-sm-4">
                                             <form class="form-inline">
-                                                Select a Theatre: <select class="form-control-sm" name="Theatre">
-                                                    {{% for theatre in Theatres %}}
-                                                    <option value="{{theatre.theatreID}}">{{theatre.name}}</option>
-                                                    {{% end for %}}
+                                                Select a Theatre: <select class="form-control-sm" name="showtimeTheatreSelect">
+                                                    <!-- need JS for selection options-->
+                                                    <option value=""></option>
                                                 </select>
 
-                                                Search for a Movie: <input class="form-control-sm" type="text">
+                                                Search for a Movie: <input class="form-control-sm" type="text" name="showtimeMovieSelect">
                                                 <input class="form-control-sm" type="button" value="Search">
+                                                <input class="form-control-sm" type="button" value="Buy" data-toggle="modal" data-target="#buyTicketModal">
                                             </form>
                                         </div>
 
@@ -115,23 +108,23 @@
                                         </div>
                                         <!--content form-->
                                         <div class="modal-body">
-                                                <form class="form-horizontal">
+                                                <form class="form-horizontal" id="buyTicketForm">
                                                     <div class="form-group">
                                                         <label for="Name" class="col-sm-2 control-label">Name:</label>
                                                         <div class="col-sm-10">
-                                                            <input class="form-control" type="text" id="Name">
+                                                            <input class="form-control" type="text" id="CustomerName">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="DOB" class="col-sm-4 control-label">Date of Birth:</label>
                                                         <div class="col-sm-10">
-                                                            <input class="form-control" type="text" id="DOB">
+                                                            <input class="form-control" type="text" id="DOB" name="CustomerDOB">
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
                                                             <label for="TicketCount" class="col-sm-4 control-label">How Many:</label>
                                                             <div class="col-sm-10">
-                                                                <select class="form-control" id="TicketCount">
+                                                                <select class="form-control" id="TicketCount" name="TicketCount">
                                                                     <option value="1">1</option>
                                                                     <option value="2">2</option>
                                                                     <option value="3">3</option>
@@ -149,7 +142,7 @@
                                             </div>
                                         <!--footer-->
                                         <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Buy</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="buyTicket()">Buy</button>
                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
                                             </div>
                                         </div>
@@ -157,7 +150,7 @@
                                 </div>
                                 <!--end purchase ticket modal-->
 
-                                        <table id="table_id" class="display">
+                                        <table id="showingsTable" class="display">
                                                 <thead>
                                                     <tr>
                                                         <th>Showing ID</th>
@@ -166,22 +159,14 @@
                                                         <th>Rating</th>
                                                         <th>Genre</th>
                                                         <th>Run Time</th>
-                                                        <th> </th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                    {% for r in results %}
+                                                <!-- <tbody>
+                                                    
                                                     <tr>
-                                                        <td>{{r[0]}}</td>
-                                                        <td>{{r[1]}}</td>
-                                                        <td>{{r[2]}}</td>
-                                                        <td>{{r[3]}}</td>
-                                                        <td>{{r[4]}}</td>
-                                                        <td>{{r[5]}}</td>
                                                         <td><input type="button" class="form-control-sm" value="buy" data-toggle="modal" data-target="#buyTicketModal"></td>
-                                                        {{% end for%}}
                                                     </tr>
-                                                </tbody>
+                                                </tbody> -->
                                         </table>
                                     </article>
                                 </div>
@@ -224,7 +209,7 @@
                                                 <div class="col-sm-2">
                                                     <!--control buttons for manage movies-->
                                                     <form>
-                                                    Select a Movie: <select class="form-control-sm" name="Movies">Find Movie</select>
+                                                    Select a Movie: <input type="text" class="form-control-sm" name="ManageMoviesSearch">Find Movie</select>
                                                                    <input class="form-control-sm" type="button" value="Search">
                                                                    <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteMovieModal">
                                                                    <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addMovieModal">
@@ -247,25 +232,25 @@
                                                                     <div class="form-group">
                                                                         <label for="Title" class="col-sm-2 control-label">Title:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="Title">
+                                                                            <input class="form-control" type="text" id="Title" name="MovieTitle">
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="Rating" class="col-sm-2 control-label">Rating:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="Rating">
+                                                                            <input class="form-control" type="text" id="Rating" name="MovieRating">
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="Genre" class="col-sm-2 control-label">Genre:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="Genre">
+                                                                            <input class="form-control" type="text" id="Genre" name="MovieGenre">
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="RunTime" class="col-sm-3 control-label">Run-Time:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="RunTime">
+                                                                            <input class="form-control" type="text" id="RunTime" name="MovieLength">
                                                                         </div>
                                                                     </div>
                                                                 </form>
@@ -294,25 +279,25 @@
                                                                     <div class="form-group">
                                                                         <label for="Title" class="col-sm-2 control-label">Title:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="Title" placeholder="Pre-Filled Title">
+                                                                            <input class="form-control" type="text" id="Title" name="MovieTitleUpdate" placeholder="Pre-Filled Title">
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="Rating" class="col-sm-2 control-label">Rating:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="Rating" placeholder="Pre-Filled Rating">
+                                                                            <input class="form-control" type="text" id="Rating" name="MovieRatingUdpate" placeholder="Pre-Filled Rating">
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="Genre" class="col-sm-2 control-label">Genre:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="Genre" placeholder="Pre-Filled Genre">
+                                                                            <input class="form-control" type="text" id="Genre" name="MovieGenreUpdate" placeholder="Pre-Filled Genre">
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
                                                                         <label for="RunTime" class="col-sm-3 control-label">Run-Time:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="RunTime" placeholder="Pre-Filled Run Time">
+                                                                            <input class="form-control" type="text" id="RunTime" name="MovieLengthUpdate" placeholder="Pre-Filled Run Time">
                                                                         </div>
                                                                     </div>
                                                                 </form>
@@ -363,13 +348,13 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {% for movies in Movies %}
+                                                        <!-- need JS for manage movies table-->>
                                                         <tr>
-                                                            <td>{{movies.movieID}}</td>
-                                                            <td>{{movies.name}}</td>
-                                                            <td>{{movies.rating}}</td>
-                                                            <td>{{movies.genre}}</td>
-                                                            <td>{{movies.length}}</td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
+                                                            <td></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -385,7 +370,7 @@
                                             <div class="tab-pane fade show active" id="ManageTheaters">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Select a Theater: <input class="form-control-sm" type="text" name="Theatre">Find Theater</select>
+                                                    Select a Theater: <input class="form-control-sm" type="text" name="TheatreNameSelect">Find Theater</select>
                                                                    <input class="form-control-sm" type="button" value="Search">
                                                                    <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteTheaterModal">
                                                                    <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addTheaterModal">
@@ -409,13 +394,13 @@
                                                                         <div class="form-group">
                                                                             <label for="Name" class="col-sm-2 control-label">Name:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="Name">
+                                                                                <input class="form-control" type="text" id="TheaterName">
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="Address" class="col-sm-2 control-label">Address:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="Address">
+                                                                                <input class="form-control" type="text" id="TheaterAddress" name="TheaterAddress">
                                                                             </div>
                                                                         </div>
                                                                     </form>
@@ -444,13 +429,13 @@
                                                                         <div class="form-group">
                                                                             <label for="Name" class="col-sm-2 control-label">Name:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="Name" placeholder="Pre-filled Name">
+                                                                                <input class="form-control" type="text" id="TheaterNameUpdate" name="TheaterNameUpdate" placeholder="Pre-filled Name">
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="Address" class="col-sm-2 control-label">Address:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="Address" placeholder="Pre-filled address">
+                                                                                <input class="form-control" type="text" id="TheaterAddressUpdate" name="TheaterAddressUpdate" placeholder="Pre-filled address">
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
@@ -504,12 +489,12 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {% for theater in theaters %}
+                                                            <!-- need JS for manage theater table-->
                                                             <tr>
-                                                                <td>{{theaters.TheaterID}}</td>
-                                                                <td>{{theaters.Name}}</td>
-                                                                <td>{{theaters.Address}}</td>
-                                                                <td>{{theaters.RoomCount}}</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -523,9 +508,9 @@
                                             <div class="tab-pane fade show active" id="ManageShowings">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Select a Theater: <select class="form-control-sm" name="Theatre">Find Theatre</select>
+                                                    Select a Theater: <select class="form-control-sm" name="TheatreNameSelect">Find Theatre</select>
                                                     Find a Room: <select class="form-control-sm" name="Room">Find Room</select>
-                                                    Find a Movie: <select class="form-control-sm" name="Movie">Find Movie</select>
+                                                    Find a Movie: <input type="text" class="form-control-sm" name="MovieNameSelect">
                                                                    <input class="form-control-sm" type="button" value="Search">
                                                                    <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteShowingModal">
                                                                    <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addShowingModal">
@@ -549,7 +534,7 @@
                                                                         <div class="form-group">
                                                                             <label for="TheaterSelect" class="col-sm-4 control-label">Select Theater:</label>
                                                                             <div class="col-sm-10">
-                                                                                <select class="form-control" id="TheaterSelect">
+                                                                                <select class="form-control" id="TheaterSelect" name="TheaterSelect">
                                                                                     <option value="Option1">Option1</option>
                                                                                     <option value="Option2">Option2</option>
                                                                                 </select>
@@ -558,7 +543,7 @@
                                                                         <div class="form-group">
                                                                             <label for="MovieSelect" class="col-sm-4 control-label">Pick a Movie:</label>
                                                                             <div class="col-sm-10">
-                                                                                    <select class="form-control" id="MovieSelect">
+                                                                                    <select class="form-control" id="MovieSelect" name="MovieSelect">
                                                                                             <option value="Option1">Option1</option>
                                                                                             <option value="Option2">Option2</option>
                                                                                         </select>
@@ -567,7 +552,7 @@
                                                                         <div class="form-group">
                                                                             <label for="RoomSelect" class="col-sm-4 control-label">Pick a Room:</label>
                                                                             <div class="col-sm-10">
-                                                                                    <select class="form-control" id="RoomSelect">
+                                                                                    <select class="form-control" id="RoomSelect" name="RoomSelect">
                                                                                             <option value="Option1">Option1</option>
                                                                                             <option value="Option2">Option2</option>
                                                                                         </select>
@@ -576,7 +561,7 @@
                                                                         <div class="form-group">
                                                                             <label for="ShowingTime" class="col-sm-3 control-label">Show Time:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="datetime" id="ShowingTime">
+                                                                                <input class="form-control" type="datetime" id="ShowingTime" name ="ShowingDateTime">
                                                                             </div>
                                                                         </div>
                                                                     </form>
@@ -605,7 +590,7 @@
                                                                             <div class="form-group">
                                                                                 <label for="TheaterSelect" class="col-sm-4 control-label">Select Theater:</label>
                                                                                 <div class="col-sm-10">
-                                                                                    <select class="form-control" id="TheaterSelect">
+                                                                                    <select class="form-control" id="TheaterSelect" name="TheaterSelect">
                                                                                         <option value="Option1">Option1</option>
                                                                                         <option value="Option2">Option2</option>
                                                                                     </select>
@@ -614,7 +599,7 @@
                                                                             <div class="form-group">
                                                                                 <label for="MovieSelect" class="col-sm-4 control-label">Pick a Movie:</label>
                                                                                 <div class="col-sm-10">
-                                                                                        <select class="form-control" id="MovieSelect">
+                                                                                        <select class="form-control" id="MovieSelect" name="MovieSelect">
                                                                                                 <option value="Option1">Option1</option>
                                                                                                 <option value="Option2">Option2</option>
                                                                                             </select>
@@ -623,7 +608,7 @@
                                                                             <div class="form-group">
                                                                                 <label for="RoomSelect" class="col-sm-4 control-label">Pick a Room:</label>
                                                                                 <div class="col-sm-10">
-                                                                                        <select class="form-control" id="RoomSelect">
+                                                                                        <select class="form-control" id="RoomSelect" name="RoomSelect">
                                                                                                 <option value="Option1">Option1</option>
                                                                                                 <option value="Option2">Option2</option>
                                                                                             </select>
@@ -632,7 +617,7 @@
                                                                             <div class="form-group">
                                                                                 <label for="ShowingTime" class="col-sm-3 control-label">Show Time:</label>
                                                                                 <div class="col-sm-10">
-                                                                                    <input class="form-control" type="datetime" id="ShowingTime" placeholder="12/20/2019 7:00pm">
+                                                                                    <input class="form-control" type="datetime" id="ShowingTime" name="ShowingDateTime" placeholder="12/20/2019 7:00pm">
                                                                                 </div>
                                                                             </div>
                                                                         </form>
@@ -680,12 +665,12 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {% for room in Rooms %}
+                                                            <!--need JS for showings table on manage menu-->>
                                                             <tr>
-                                                                <td>{{showings.Theater}}</td>
-                                                                <td>{{showings.RoomID}}</td>
-                                                                <td>{{showings.Movie}}</td>
-                                                                <td>{{showings.ShowTime}}</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -699,9 +684,9 @@
                                             <div class="tab-pane fade show active" id="ManageTickets">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Select a Theater: <select class="form-control-sm" name="Theatre">Find Theatre</select>
-                                                    Find a Room: <select class="form-control-sm" name="Room">Find Room</select>
-                                                    Find a Customer: <select class="form-control-sm" name="Customer">Find Room</select>
+                                                    Select a Theater: <select class="form-control-sm" name="TheatreSelect">Find Theatre</select>
+                                                    Find a Room: <select class="form-control-sm" name="RoomSelect">Find Room</select>
+                                                    Find a Customer: <select class="form-control-sm" name="CustomerNameSelect">Find Room</select>
                                                                    <input class="form-control-sm" type="button" value="Search">
                                                                    <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteTicketModal">
                                                                    <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addTicketModal">
@@ -725,7 +710,7 @@
                                                                     <div class="form-group">
                                                                         <label for="Customer" class="col-sm-4 control-label">Select Customer:</label>
                                                                         <div class="col-sm-10">
-                                                                            <select id="Customer" class="form-control-sm" value="Customer">
+                                                                            <select id="Customer" class="form-control-sm" value="Customer" name="CustomerSelectMenu">
                                                                                 <option>Customer1 Name DOB</option>
                                                                                 <option>Customer2 Name DOB</option>
                                                                                 <option>Customer3 Name DOB</option>
@@ -735,7 +720,7 @@
                                                                     <div class="form-group">
                                                                         <label for="ShowTime" class="col-sm-4 control-label">Pick Show-Time:</label>
                                                                         <div class="col-sm-10">
-                                                                                <select id="ShowTime" class="form-control-sm" value="Show-Time">
+                                                                                <select id="ShowTime" class="form-control-sm" value="Show-Time" name="ShowingSelectMenu">
                                                                                         <option>DateTime 1</option>
                                                                                         <option>DateTime 2</option>
                                                                                         <option>DateTime 3</option>
@@ -745,7 +730,7 @@
                                                                     <div class="form-group">
                                                                         <label for="Movie" class="col-sm-2 control-label">Movie:</label>
                                                                         <div class="col-sm-10">
-                                                                                <select id="Movie" class="form-control-sm" value="Movie">
+                                                                                <select id="Movie" class="form-control-sm" value="Movie" name="MovieSelectMenu">
                                                                                         <option>Movie Title 1</option>
                                                                                         <option>Movie Title 2</option>
                                                                                         <option>Movie Title 3</option>
@@ -762,6 +747,10 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+
+<!------------------------------------------------UPDATE NAME ATTRIBUTES BELOW THIS LINE------------------------------------------------------------------------>
+
 
                                                <!--update delete modals for manage movies-->
                                                 <div class="modal" id="editTicketModal">
@@ -852,14 +841,14 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {% for room in Rooms %}
+                                                           
                                                             <tr>
-                                                                <td>{{tickets.Theater}}</td>
-                                                                <td>{{tickets.RoomID}}</td>
-                                                                <td>{{tickets.Movie}}</td>
-                                                                <td>{{tickets.CustomerName}}</td>
-                                                                <td>{{tickets.ShowTime}}</td>
-                                                                <td>{{tickets.Price}}</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -980,10 +969,10 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {% for room in Rooms %}
+                                                            
                                                             <tr>
-                                                                <td>{{rooms.Theater}}</td>
-                                                                <td>{{rooms.RoomID}}</td>
+                                                                <td></td>
+                                                                <td></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -1110,11 +1099,11 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {% for customer in customers %}
+                                                            
                                                             <tr>
-                                                                <td>{{customers.customerID}}</td>
-                                                                <td>{{customers.name}}</td>
-                                                                <td>{{customers.DOB}}</td>
+                                                                <td></td>
+                                                                <td></td>
+                                                                <td></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
