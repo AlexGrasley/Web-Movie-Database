@@ -1,10 +1,10 @@
-use crate::model::Ticket;
 use crate::model::RowTranslation;
-use crate::shared::select_thing_by_id;
+use crate::model::Ticket;
+use crate::shared::*;
 use crate::DBConn;
 
 use mysql::params;
-use rocket::{self, get, http::Status, post};
+use rocket::{self, delete, get, http::Status, patch, post};
 use rocket_contrib::json::Json;
 
 #[get("/<id>")]
@@ -18,6 +18,14 @@ pub fn select_ticket_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Tic
         })
 }
 
+#[delete("/<id>")]
+pub fn delete_ticket_by_id_handler(mut conn: DBConn, id: u64) -> Status {
+    match delete_thing_by_id(&mut conn, id, "ticket") {
+        200 => Status::new(200, "deleted"),
+        404 => Status::new(404, "ticket not found"),
+        _ => Status::new(500, "Internal Server Error"),
+    }
+}
 
 #[post("/", format = "json", data = "<ticket>")]
 pub fn insert_ticket_handler(
@@ -71,8 +79,38 @@ pub fn list_tickets(conn: &mut DBConn) -> Result<Vec<Ticket>, u64> {
     }
 }
 
+#[patch("/", format = "json", data = "<ticket>")]
+pub fn update_ticket_by_id_handler(
+    mut conn: DBConn,
+    ticket: Json<Ticket>,
+) -> Result<Json<Ticket>, Status> {
+    conn
+        .prep_exec(
+            UPDATE_TICKET,
+            params! {
+                "ticket_id" => &ticket.ticket_id,
+                "price" => &ticket.price,
+                "showing_id" => &ticket.showing_id,
+                "customer_id" => &ticket.customer_id,
+            },
+        ).map_err(|_| Status::new(500, "Internal server error"))?;
+
+    match ticket.ticket_id {
+        Some(id) => select_thing_by_id(&mut conn, id, SELECT_TICKET_BY_ID)
+            .map_err(|code| match code {
+                404 => Status::new(404, "Ticket not found"),
+                400 => Status::new(400, "bad req"),
+                _ => Status::new(500, "internal server error"),
+            })
+            .map(Json),
+        _ => Err(Status::new(500, "Couldn't update ticket")),
+    }
+}
+
 static SELECT_TICKETS: &str = "SELECT ticket_id, price, showing_id, customer_id FROM tickets";
 static SELECT_TICKET_BY_ID: &str =
     "SELECT ticket_id, price, showing_id, customer_id FROM tickets WHERE ticket_id = :id";
 static INSERT_TICKET: &str =
     "INSERT INTO tickets (`price`, `showing_id`, `customer_id`) VALUES (:price, :showing_id, :customer_id)";
+static UPDATE_TICKET: &str =
+    "UPDATE tickets SET `price` = :price, showing_id = :showing_id, `customer_id` = :customer_id WHERE ticket_id = :ticket_id";
