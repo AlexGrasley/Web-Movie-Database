@@ -9,6 +9,7 @@ mod showings;
 mod table_ops;
 mod theater;
 mod tickets;
+mod shared;
 
 use mysql;
 use rocket::{self, get, routes};

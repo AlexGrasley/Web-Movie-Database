@@ -1,15 +1,15 @@
 use crate::model::Ticket;
+use crate::model::RowTranslation;
+use crate::shared::select_thing_by_id;
 use crate::DBConn;
 
 use mysql::params;
-
 use rocket::{self, get, http::Status, post};
 use rocket_contrib::json::Json;
-use std::ops::Try;
 
 #[get("/<id>")]
 pub fn select_ticket_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Ticket>, Status> {
-    select_ticket_by_id(&mut conn, id)
+    select_thing_by_id(&mut conn, id, SELECT_TICKET_BY_ID)
         .map(Json)
         .map_err(|code| match code {
             404 => Status::new(404, "Ticket not found"),
@@ -18,29 +18,6 @@ pub fn select_ticket_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Tic
         })
 }
 
-pub fn select_ticket_by_id(conn: &mut DBConn, id: u64) -> Result<Ticket, u64> {
-    match conn.prep_exec(SELECT_TICKET_BY_ID, params! {"id" => id}) {
-        Ok(res) => {
-            let results: Vec<Ticket> = res
-                .map(|row| row.unwrap())
-                .map(|row| {
-                    let (ticket_id, price, showing_id, customer_id) = mysql::from_row(row);
-                    Ticket {
-                        ticket_id,
-                        price,
-                        showing_id,
-                        customer_id,
-                    }
-                })
-                .collect();
-
-            let mut tickets = results.into_iter();
-            tickets.next().into_result().map_err(|_| 404)
-            // Ok(Json(ticket))
-        }
-        Err(_) => Err(400),
-    }
-}
 
 #[post("/", format = "json", data = "<ticket>")]
 pub fn insert_ticket_handler(
@@ -59,7 +36,7 @@ pub fn insert_ticket_handler(
         .map(|res| res.last_insert_id());
 
     match last_id {
-        Ok(id) => select_ticket_by_id(&mut conn, id)
+        Ok(id) => select_thing_by_id(&mut conn, id, SELECT_TICKET_BY_ID)
             .map_err(|code| match code {
                 404 => Status::new(404, "Ticket not found"),
                 400 => Status::new(400, "bad req"),
@@ -86,19 +63,9 @@ pub fn list_tickets(conn: &mut DBConn) -> Result<Vec<Ticket>, u64> {
         Ok(res) => {
             let res = res
                 .map(|row| row.unwrap())
-                .map(|row| {
-                    let (ticket_id, price, showing_id, customer_id) = mysql::from_row(row);
-                    Ticket {
-                        ticket_id,
-                        price,
-                        showing_id,
-                        customer_id,
-                    }
-                })
+                .map(RowTranslation::translate)
                 .collect::<Vec<Ticket>>();
             Ok(res)
-
-            // Ok(Json(ticket))
         }
         Err(_) => Err(400),
     }

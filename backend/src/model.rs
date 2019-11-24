@@ -12,6 +12,18 @@ pub struct Customer {
     pub birthday: NaiveDate,
 }
 
+impl RowTranslation for Customer {
+    fn translate(row: Row) -> Self {
+        let (customer_id, fname, lname, birthday) = mysql::from_row(row);
+        Customer {
+            customer_id,
+            fname,
+            lname,
+            birthday,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 pub enum Rating {
     E,
@@ -84,11 +96,35 @@ pub struct Movie {
     pub length: u64,
 }
 
+impl RowTranslation for Movie {
+    fn translate(row: Row) -> Self {
+        let (movie_id, name, rating, genre, length) = mysql::from_row(row);
+        Movie {
+            movie_id,
+            name,
+            rating,
+            genre,
+            length,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Room {
     pub room_id: Option<u64>,
     pub capacity: u32,
     pub theater_id: u64,
+}
+
+impl RowTranslation for Room {
+    fn translate(row: Row) -> Self {
+        let (room_id, capacity, theater_id) = mysql::from_row(row);
+        Room {
+            room_id,
+            capacity,
+            theater_id,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -97,6 +133,18 @@ pub struct Showing {
     pub time: NaiveDateTime,
     pub movie_id: u64,
     pub room_id: u64,
+}
+
+impl RowTranslation for Showing {
+    fn translate(row: Row) -> Self {
+        let (showing_id, time, movie_id, room_id) = mysql::from_row(row);
+        Showing {
+            showing_id,
+            time,
+            movie_id,
+            room_id,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -110,10 +158,42 @@ pub struct Theater {
     pub zip: Option<String>,
 }
 
+impl RowTranslation for Theater {
+    fn translate(row: Row) -> Self {
+        let (theater_id, name, address, address_two, city, state, zip) = mysql::from_row(row);
+        Theater {
+            theater_id,
+            name,
+            address,
+            address_two,
+            city,
+            state,
+            zip,
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Ticket {
     pub ticket_id: Option<u64>,
     pub price: f64,
     pub showing_id: Option<u64>,
     pub customer_id: Option<u64>,
+}
+
+impl RowTranslation for Ticket {
+    fn translate(row: Row) -> Self {
+        let (ticket_id, price, showing_id, customer_id) = mysql::from_row(row);
+        Ticket {
+            ticket_id,
+            price,
+            showing_id,
+            customer_id,
+        }
+    }
+}
+
+use mysql::Row;
+pub trait RowTranslation {
+    fn translate(row: Row) -> Self;
 }

@@ -1,44 +1,21 @@
 use crate::model::Room;
+use crate::model::RowTranslation;
+use crate::shared::select_thing_by_id;
 use crate::DBConn;
 
 use mysql::params;
-
 use rocket::{self, get, http::Status, post};
 use rocket_contrib::json::Json;
-use std::ops::Try;
 
 #[get("/<id>")]
 pub fn select_room_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Room>, Status> {
-    select_room_by_id(&mut conn, id)
+    select_thing_by_id(&mut conn, id, SELECT_ROOM_BY_ID)
         .map(Json)
         .map_err(|code| match code {
             404 => Status::new(404, "Room not found"),
             400 => Status::new(400, "bad req"),
             _ => Status::new(500, "internal server error"),
         })
-}
-
-pub fn select_room_by_id(conn: &mut DBConn, id: u64) -> Result<Room, u64> {
-    match conn.prep_exec(SELECT_ROOM_BY_ID, params! {"id" => id}) {
-        Ok(res) => {
-            let results: Vec<Room> = res
-                .map(|row| row.unwrap())
-                .map(|row| {
-                    let (room_id, capacity, theater_id) = mysql::from_row(row);
-                    Room {
-                        room_id,
-                        capacity,
-                        theater_id,
-                    }
-                })
-                .collect();
-
-            let mut rooms = results.into_iter();
-            rooms.next().into_result().map_err(|_| 404)
-            // Ok(Json(room))
-        }
-        Err(_) => Err(400),
-    }
 }
 
 #[post("/", format = "json", data = "<room>")]
@@ -54,7 +31,7 @@ pub fn insert_room_handler(mut conn: DBConn, room: Json<Room>) -> Result<Json<Ro
         .map(|res| res.last_insert_id());
 
     match last_id {
-        Ok(id) => select_room_by_id(&mut conn, id)
+        Ok(id) => select_thing_by_id(&mut conn, id, SELECT_ROOM_BY_ID)
             .map_err(|code| match code {
                 404 => Status::new(404, "Room not found"),
                 400 => Status::new(400, "bad req"),
@@ -79,18 +56,9 @@ pub fn list_rooms(conn: &mut DBConn) -> Result<Vec<Room>, u64> {
         Ok(res) => {
             let res = res
                 .map(|row| row.unwrap())
-                .map(|row| {
-                    let (room_id, capacity, theater_id) = mysql::from_row(row);
-                    Room {
-                        room_id,
-                        capacity,
-                        theater_id,
-                    }
-                })
+                .map(RowTranslation::translate)
                 .collect::<Vec<Room>>();
             Ok(res)
-
-            // Ok(Json(room))
         }
         Err(_) => Err(400),
     }

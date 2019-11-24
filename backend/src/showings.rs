@@ -1,45 +1,21 @@
+use crate::model::RowTranslation;
 use crate::model::Showing;
+use crate::shared::select_thing_by_id;
 use crate::DBConn;
 
 use mysql::params;
-
 use rocket::{self, get, http::Status, post};
 use rocket_contrib::json::Json;
-use std::ops::Try;
 
 #[get("/<id>")]
 pub fn select_showing_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Showing>, Status> {
-    select_showing_by_id(&mut conn, id)
+    select_thing_by_id(&mut conn, id, SELECT_SHOWING_BY_ID)
         .map(Json)
         .map_err(|code| match code {
             404 => Status::new(404, "Showing not found"),
             400 => Status::new(400, "bad req"),
             _ => Status::new(500, "internal server error"),
         })
-}
-
-pub fn select_showing_by_id(conn: &mut DBConn, id: u64) -> Result<Showing, u64> {
-    match conn.prep_exec(SELECT_SHOWING_BY_ID, params! {"id" => id}) {
-        Ok(res) => {
-            let results: Vec<Showing> = res
-                .map(|row| row.unwrap())
-                .map(|row| {
-                    let (showing_id, time, movie_id, room_id) = mysql::from_row(row);
-                    Showing {
-                        showing_id,
-                        time,
-                        movie_id,
-                        room_id,
-                    }
-                })
-                .collect();
-
-            let mut showings = results.into_iter();
-            showings.next().into_result().map_err(|_| 404)
-            // Ok(Json(showing))
-        }
-        Err(_) => Err(400),
-    }
 }
 
 #[post("/", format = "json", data = "<showing>")]
@@ -59,7 +35,7 @@ pub fn insert_showing_handler(
         .map(|res| res.last_insert_id());
 
     match last_id {
-        Ok(id) => select_showing_by_id(&mut conn, id)
+        Ok(id) => select_thing_by_id(&mut conn, id, SELECT_SHOWING_BY_ID)
             .map_err(|code| match code {
                 404 => Status::new(404, "Showing not found"),
                 400 => Status::new(400, "bad req"),
@@ -86,19 +62,9 @@ pub fn list_showings(conn: &mut DBConn) -> Result<Vec<Showing>, u64> {
         Ok(res) => {
             let res = res
                 .map(|row| row.unwrap())
-                .map(|row| {
-                    let (showing_id, time, movie_id, room_id) = mysql::from_row(row);
-                    Showing {
-                        showing_id,
-                        time,
-                        movie_id,
-                        room_id,
-                    }
-                })
+                .map(RowTranslation::translate)
                 .collect::<Vec<Showing>>();
             Ok(res)
-
-            // Ok(Json(showing))
         }
         Err(_) => Err(400),
     }
