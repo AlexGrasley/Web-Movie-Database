@@ -5,6 +5,7 @@ mod debug_inserts;
 mod model;
 mod movies;
 mod rooms;
+mod shared;
 mod showings;
 mod table_ops;
 mod theater;
@@ -33,7 +34,9 @@ fn main() {
             routes![
                 select_movie_by_id_handler,
                 insert_movie_handler,
-                list_movies_handler
+                list_movies_handler,
+                delete_movie_by_id_handler,
+                update_movie_by_id_handler,
             ],
         )
         .mount(
@@ -41,7 +44,9 @@ fn main() {
             routes![
                 select_customer_by_id_handler,
                 insert_customer_handler,
-                list_customers_handler
+                list_customers_handler,
+                delete_customer_by_id_handler,
+                update_customer_by_id_handler,
             ],
         )
         .mount(
@@ -49,7 +54,9 @@ fn main() {
             routes![
                 select_room_by_id_handler,
                 insert_room_handler,
-                list_rooms_handler
+                list_rooms_handler,
+                delete_room_by_id_handler,
+                update_room_by_id_handler,
             ],
         )
         .mount(
@@ -57,7 +64,9 @@ fn main() {
             routes![
                 select_showing_by_id_handler,
                 insert_showing_handler,
-                list_showings_handler
+                list_showings_handler,
+                delete_showing_by_id_handler,
+                update_showing_by_id_handler,
             ],
         )
         .mount(
@@ -65,7 +74,9 @@ fn main() {
             routes![
                 select_theater_by_id_handler,
                 insert_theater_handler,
-                list_theaters_handler
+                list_theaters_handler,
+                delete_theater_by_id_handler,
+                update_theater_by_id_handler,
             ],
         )
         .mount(
@@ -73,7 +84,9 @@ fn main() {
             routes![
                 select_ticket_by_id_handler,
                 insert_ticket_handler,
-                list_tickets_handler
+                list_tickets_handler,
+                delete_ticket_by_id_handler,
+                update_ticket_by_id_handler,
             ],
         )
         .attach(DBConn::fairing())

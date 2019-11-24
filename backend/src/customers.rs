@@ -1,15 +1,15 @@
 use crate::model::Customer;
+use crate::model::RowTranslation;
+use crate::shared::*;
 use crate::DBConn;
 
 use mysql::params;
-
-use rocket::{self, get, http::Status, post};
+use rocket::{self, delete, get, http::Status, patch, post};
 use rocket_contrib::json::Json;
-use std::ops::Try;
 
 #[get("/<id>")]
 pub fn select_customer_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Customer>, Status> {
-    select_customer_by_id(&mut conn, id)
+    select_thing_by_id(&mut conn, id, SELECT_CUSTOMER_BY_ID)
         .map(Json)
         .map_err(|code| match code {
             404 => Status::new(404, "Customer not found"),
@@ -18,26 +18,12 @@ pub fn select_customer_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<C
         })
 }
 
-pub fn select_customer_by_id(conn: &mut DBConn, id: u64) -> Result<Customer, u64> {
-    match conn.prep_exec(SELECT_CUSTOMER_BY_ID, params! {"id" => id}) {
-        Ok(res) => {
-            let results: Vec<Customer> = res
-                .map(|row| row.unwrap())
-                .map(|row| {
-                    let (customer_id, fname, lname, birthday) = mysql::from_row(row);
-                    Customer {
-                        customer_id,
-                        fname,
-                        lname,
-                        birthday,
-                    }
-                })
-                .collect();
-
-            let mut customers = results.into_iter();
-            customers.next().into_result().map_err(|_| 404)
-        }
-        Err(_) => Err(400),
+#[delete("/<id>")]
+pub fn delete_customer_by_id_handler(mut conn: DBConn, id: u64) -> Status {
+    match delete_thing_by_id(&mut conn, id, "customer") {
+        200 => Status::new(200, "deleted"),
+        404 => Status::new(404, "Customer not found"),
+        _ => Status::new(500, "Internal Server Error"),
     }
 }
 
@@ -58,7 +44,7 @@ pub fn insert_customer_handler(
         .map(|res| res.last_insert_id());
 
     match last_id {
-        Ok(id) => select_customer_by_id(&mut conn, id)
+        Ok(id) => select_thing_by_id(&mut conn, id, SELECT_CUSTOMER_BY_ID)
             .map_err(|code| match code {
                 404 => Status::new(404, "Customer not found"),
                 400 => Status::new(400, "bad req"),
@@ -85,21 +71,39 @@ pub fn list_customers(conn: &mut DBConn) -> Result<Vec<Customer>, u64> {
         Ok(res) => {
             let res = res
                 .map(|row| row.unwrap())
-                .map(|row| {
-                    let (customer_id, fname, lname, birthday) = mysql::from_row(row);
-                    Customer {
-                        customer_id,
-                        fname,
-                        lname,
-                        birthday,
-                    }
-                })
+                .map(RowTranslation::translate)
                 .collect::<Vec<Customer>>();
             Ok(res)
-
-            // Ok(Json(customer))
         }
         Err(_) => Err(400),
+    }
+}
+
+#[patch("/", format = "json", data = "<customer>")]
+pub fn update_customer_by_id_handler(
+    mut conn: DBConn,
+    customer: Json<Customer>,
+) -> Result<Json<Customer>, Status> {
+    conn
+        .prep_exec(
+            UPDATE_CUSTOMER,
+            params! {
+                "customer_id" => &customer.customer_id,
+                "fname" => &customer.fname,
+                "lname" => &customer.lname,
+                "birthday" => &customer.birthday,
+            },
+        ).map_err(|_| Status::new(500, "Internal server error"))?;
+
+    match customer.customer_id {
+        Some(id) => select_thing_by_id(&mut conn, id, SELECT_CUSTOMER_BY_ID)
+            .map_err(|code| match code {
+                404 => Status::new(404, "Customer not found"),
+                400 => Status::new(400, "bad req"),
+                _ => Status::new(500, "internal server error"),
+            })
+            .map(Json),
+        _ => Err(Status::new(500, "Couldn't update customer")),
     }
 }
 
@@ -108,3 +112,5 @@ static SELECT_CUSTOMER_BY_ID: &str =
     "SELECT customer_id, fname, lname, birthday FROM customers WHERE customer_id = :id";
 static INSERT_CUSTOMER: &str =
     "INSERT INTO customers (`fname`, `lname`, `birthday`) VALUES (:fname, :lname, :birthday)";
+static UPDATE_CUSTOMER: &str =
+    "UPDATE customers SET fname = :fname, lname = :lname, birthday = :birthday WHERE customer_id = :customer_id";

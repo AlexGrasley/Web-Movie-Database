@@ -1,15 +1,15 @@
 use crate::model::Movie;
+use crate::model::RowTranslation;
+use crate::shared::*;
 use crate::DBConn;
 
 use mysql::params;
-
-use rocket::{self, get, http::Status, post};
+use rocket::{self, delete, get, http::Status, patch, post};
 use rocket_contrib::json::Json;
-use std::ops::Try;
 
 #[get("/<id>")]
 pub fn select_movie_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Movie>, Status> {
-    select_movie_by_id(&mut conn, id)
+    select_thing_by_id(&mut conn, id, SELECT_MOVIE_BY_ID)
         .map(Json)
         .map_err(|code| match code {
             404 => Status::new(404, "Movie not found"),
@@ -18,27 +18,12 @@ pub fn select_movie_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Movi
         })
 }
 
-pub fn select_movie_by_id(conn: &mut DBConn, id: u64) -> Result<Movie, u64> {
-    match conn.prep_exec(SELECT_MOVIE_BY_ID, params! {"id" => id}) {
-        Ok(res) => {
-            let results: Vec<Movie> = res
-                .map(|row| row.unwrap())
-                .map(|row| {
-                    let (movie_id, name, rating, genre, length) = mysql::from_row(row);
-                    Movie {
-                        movie_id,
-                        name,
-                        rating,
-                        genre,
-                        length,
-                    }
-                })
-                .collect();
-
-            let mut movies = results.into_iter();
-            movies.next().into_result().map_err(|_| 404)
-        }
-        Err(_) => Err(400),
+#[delete("/<id>")]
+pub fn delete_movie_by_id_handler(mut conn: DBConn, id: u64) -> Status {
+    match delete_thing_by_id(&mut conn, id, "movie") {
+        200 => Status::new(200, "deleted"),
+        404 => Status::new(404, "movie not found"),
+        _ => Status::new(500, "Internal Server Error"),
     }
 }
 
@@ -57,7 +42,7 @@ pub fn insert_movie_handler(mut conn: DBConn, movie: Json<Movie>) -> Result<Json
         .map(|res| res.last_insert_id());
 
     match last_id {
-        Ok(id) => select_movie_by_id(&mut conn, id)
+        Ok(id) => select_thing_by_id(&mut conn, id, SELECT_MOVIE_BY_ID)
             .map_err(|code| match code {
                 404 => Status::new(404, "Movie not found"),
                 400 => Status::new(400, "bad req"),
@@ -82,22 +67,40 @@ pub fn list_movies(conn: &mut DBConn) -> Result<Vec<Movie>, u64> {
         Ok(res) => {
             let res = res
                 .map(|row| row.unwrap())
-                .map(|row| {
-                    let (movie_id, name, rating, genre, length) = mysql::from_row(row);
-                    Movie {
-                        movie_id,
-                        name,
-                        rating,
-                        genre,
-                        length,
-                    }
-                })
+                .map(RowTranslation::translate)
                 .collect::<Vec<Movie>>();
             Ok(res)
-
-            // Ok(Json(movie))
         }
         Err(_) => Err(400),
+    }
+}
+
+#[patch("/", format = "json", data = "<movie>")]
+pub fn update_movie_by_id_handler(
+    mut conn: DBConn,
+    movie: Json<Movie>,
+) -> Result<Json<Movie>, Status> {
+    conn
+        .prep_exec(
+            UPDATE_MOVIE,
+            params! {
+                "movie_id" => &movie.movie_id,
+                "name" => &movie.name,
+                "rating" => movie.rating,
+                "genre" => &movie.genre,
+                "length" => movie.length
+            },
+        ).map_err(|_| Status::new(500, "Internal server error"))?;
+
+    match movie.movie_id {
+        Some(id) => select_thing_by_id(&mut conn, id, SELECT_MOVIE_BY_ID)
+            .map_err(|code| match code {
+                404 => Status::new(404, "Movie not found"),
+                400 => Status::new(400, "bad req"),
+                _ => Status::new(500, "internal server error"),
+            })
+            .map(Json),
+        _ => Err(Status::new(500, "Couldn't update movie")),
     }
 }
 
@@ -106,3 +109,5 @@ static SELECT_MOVIE_BY_ID: &str =
     "SELECT movie_id, name, rating, genre, length FROM movies WHERE movie_id = :id";
 static INSERT_MOVIE: &str =
     "INSERT INTO movies (`name`, `rating`, `genre`, `length`) VALUES (:name, :rating, :genre, :length)";
+static UPDATE_MOVIE: &str =
+    "UPDATE movies SET name = :name, rating = :rating, genre = :genre, length = :length WHERE movie_id = :movie_id";

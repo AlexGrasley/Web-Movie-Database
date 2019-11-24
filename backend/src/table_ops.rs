@@ -3,63 +3,63 @@ use rocket::{self, delete, http::Status, post};
 
 #[post("/create_tables")]
 pub fn create_tables(mut conn: DBConn) -> Status {
-  //! THE ORDER IS IMPORTANT HERE
-  for stmt in [
-    CREATE_CUSTOMERS_QUERY,
-    CREATE_MOVIES_QUERY,
-    CREATE_THEATERS_QUERY,
-    CREATE_ROOMS_QUERY,
-    CREATE_SHOWINGS_QUERY,
-    CREATE_TICKETS_QUERY,
-  ]
-  .iter()
-  {
-    let exe = conn.query(stmt);
-    if let Err(e) = exe {
-      eprintln!("Error: {:?}", e);
-      return Status::new(500, "error creating tables");
+    //! THE ORDER IS IMPORTANT HERE
+    for stmt in [
+        CREATE_CUSTOMERS_QUERY,
+        CREATE_MOVIES_QUERY,
+        CREATE_THEATERS_QUERY,
+        CREATE_ROOMS_QUERY,
+        CREATE_SHOWINGS_QUERY,
+        CREATE_TICKETS_QUERY,
+    ]
+    .iter()
+    {
+        let exe = conn.query(stmt);
+        if let Err(e) = exe {
+            eprintln!("Error: {:?}", e);
+            return Status::new(500, "error creating tables");
+        }
     }
-  }
 
-  Status::new(201, "created")
+    Status::new(201, "created")
 }
 
 #[delete("/drop_tables")]
 pub fn drop_tables(mut conn: DBConn) -> Status {
-  //! THE ORDER IS IMPORTANT HERE
-  for stmt in [
-    DROP_TABLE_TICKETS,
-    DROP_TABLE_SHOWINGS,
-    DROP_TABLE_ROOMS,
-    DROP_TABLE_THEATERS,
-    DROP_TABLE_MOVIES,
-    DROP_TABLE_CUSTOMERS,
-  ]
-  .iter()
-  {
-    let exe = conn.query(stmt);
-    if let Err(e) = exe {
-      eprintln!("Error: {:?}", e);
-      return Status::new(500, "error dropping tables");
+    //! THE ORDER IS IMPORTANT HERE
+    for stmt in [
+        DROP_TABLE_TICKETS,
+        DROP_TABLE_SHOWINGS,
+        DROP_TABLE_ROOMS,
+        DROP_TABLE_THEATERS,
+        DROP_TABLE_MOVIES,
+        DROP_TABLE_CUSTOMERS,
+    ]
+    .iter()
+    {
+        let exe = conn.query(stmt);
+        if let Err(e) = exe {
+            eprintln!("Error: {:?}", e);
+            return Status::new(500, "error dropping tables");
+        }
     }
-  }
 
-  Status::new(204, "deleted")
+    Status::new(204, "deleted")
 }
 
 use crate::debug_inserts::INSERTS;
 #[post("/insert_debug_data")]
 pub fn insert(mut conn: DBConn) -> Status {
-  //! THE ORDER IS IMPORTANT HERE
-  for stmt in INSERTS.iter() {
-    let exe = conn.query(stmt);
-    if let Err(e) = exe {
-      eprintln!("Error: {:?}", e);
-      return Status::new(500, "error inserting into tables");
+    //! THE ORDER IS IMPORTANT HERE
+    for stmt in INSERTS.iter() {
+        let exe = conn.query(stmt);
+        if let Err(e) = exe {
+            eprintln!("Error: {:?}", e);
+            return Status::new(500, "error inserting into tables");
+        }
     }
-  }
 
-  Status::new(201, "created")
+    Status::new(201, "created")
 }
 
 pub static CREATE_CUSTOMERS_QUERY: &str = "CREATE TABLE `customers` (
