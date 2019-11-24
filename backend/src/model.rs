@@ -79,7 +79,7 @@ pub struct Movie {
     pub movie_id: Option<u64>,
     pub name: String,
     pub rating: Option<Rating>,
-    pub genre: Option<String>,
+    pub genre: String,
     // minutes
     pub length: u64,
 }

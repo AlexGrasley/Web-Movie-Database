@@ -1,7 +1,4 @@
-<!--This one is on the eng server.-->
-
 <html>
-
 
 <head>
     
@@ -15,24 +12,26 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
+        <!-- jQuery UI -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js"></script>
         <!--get datatables JS and jQuery libraries needed-->
         <script type="text/javascript" src="https://cdn.datatables.net/v/zf-6.4.3/jq-3.3.1/dt-1.10.20/b-1.6.1/sl-1.3.1/datatables.min.js"></script> 
-        
         <!-- Scripts for sending data to back end-->
-        <script type="text/javascript" src="./scripts/getdata.js"></script>
-        <script type="text/javascript" src="./scripts/senddata.js"></script>
-
-        
+        <script type="text/javascript" src="./scripts/general.js"></script>
+        <script type="text/javascript" src="./scripts/customers.js"></script>
+        <script type="text/javascript" src="./scripts/movies.js"></script>
+        <script type="text/javascript" src="./scripts/theaters.js"></script>
+        <script type="text/javascript" src="./scripts/rooms.js"></script>
+        <script type="text/javascript" src="./scripts/tickets.js"></script>
+ 
     
     <!--start dataTable table.-->
-<script> $( window ).on("load", setupMovies);</script>
-<script> $( window ).on("load", setupShowings);</script>
+<script> $( window ).on("load", setupManageMovies);</script>
+<script> $( window ).on("load", setupManageRooms);</script>
+<script> $( window ).on("load", setupManageCustomers);</script>
+<script> $( window ).on("load", setupManageTheaters);</script>
+<!-- <script> $( window ).on("load", setupShowings);</script> -->
 
-
-
-
-    
 </head>
 
 
@@ -42,165 +41,37 @@
 
 
 <body>
-<div class="tabbable boxed parentTabs p-4">
-        <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a href="#movies" class="nav-link active" data-toggle="tab">Movies</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#showtimes" class="nav-link" data-toggle="tab">Show Times</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#manage" class="nav-link" data-toggle="tab">Manage</a>
-                </li>
-            </ul>
-
-            <!--Tab showing tables for movies listed. -->
-            <div class="tab-content">
-                <div class="tab-pane fade show active" id="movies">
-                    
-                    
-                    <article class="col">
-                        
-                        <p>Browse Movies</p>
-                        
-                        <table id="moviesTable" class="display">
-                                <thead>
-                                    <tr>
-                                        <th>MovieID</th>
-                                        <th>Title</th>
-                                        <th>Rating</th>
-                                        <th>Genre</th>
-                                        <th>Run Time</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                    </article>
-                </div>
-
-<!--Show Times tab, will allow you to search for show times for specific movies, or theatres, and allow you to "buy" tickets-->
-                <div class="tab-pane fade" id="showtimes">
-                        <div class="tab-content">
-                                <div class="tab-pane fade show active" id="showtimes">
-                                    <article class="col">
-                                        <p>Find Show Times and Buy Tickets</p>
-                                        <div class="col-sm-4">
-                                            <form class="form-inline">
-                                                Select a Theatre: <select class="form-control-sm" name="showtimeTheatreSelect">
-                                                    <!-- need JS for selection options-->
-                                                    <option value=""></option>
-                                                </select>
-
-                                                Search for a Movie: <input class="form-control-sm" type="text" name="showtimeMovieSelect">
-                                                <input class="form-control-sm" type="button" value="Search">
-                                                <input class="form-control-sm" type="button" value="Buy" data-toggle="modal" data-target="#buyTicketModal">
-                                            </form>
-                                        </div>
-
-                        <!--purchase ticket modal-->
-                        <div class="modal" id="buyTicketModal">
-                                <div class="modal-dialog modal-md modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <!--header-->
-                                        <div class="modal-header">
-                                            <h4 class="modal-title">Buy Ticket</h4>
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        </div>
-                                        <!--content form-->
-                                        <div class="modal-body">
-                                                <form class="form-horizontal" id="buyTicketForm">
-                                                    <div class="form-group">
-                                                        <label for="Name" class="col-sm-2 control-label">Name:</label>
-                                                        <div class="col-sm-10">
-                                                            <input class="form-control" type="text" id="CustomerName">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="DOB" class="col-sm-4 control-label">Date of Birth:</label>
-                                                        <div class="col-sm-10">
-                                                            <input class="form-control" type="text" id="DOB" name="CustomerDOB">
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                            <label for="TicketCount" class="col-sm-4 control-label">How Many:</label>
-                                                            <div class="col-sm-10">
-                                                                <select class="form-control" id="TicketCount" name="TicketCount">
-                                                                    <option value="1">1</option>
-                                                                    <option value="2">2</option>
-                                                                    <option value="3">3</option>
-                                                                    <option value="4">4</option>
-                                                                    <option value="5">5</option>
-                                                                    <option value="6">6</option>
-                                                                    <option value="7">7</option>
-                                                                    <option value="8">8</option>
-                                                                    <option value="9">9</option>
-                                                                    <option value="10">10</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
-                                                </form>
-                                            </div>
-                                        <!--footer-->
-                                        <div class="modal-footer">
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="buyTicket()">Buy</button>
-                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--end purchase ticket modal-->
-
-                                        <table id="showingsTable" class="display">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Showing ID</th>
-                                                        <th>Theatre</th>
-                                                        <th>Title</th>
-                                                        <th>Rating</th>
-                                                        <th>Genre</th>
-                                                        <th>Run Time</th>
-                                                    </tr>
-                                                </thead>
-                                                <!-- <tbody>
-                                                    
-                                                    <tr>
-                                                        <td><input type="button" class="form-control-sm" value="buy" data-toggle="modal" data-target="#buyTicketModal"></td>
-                                                    </tr>
-                                                </tbody> -->
-                                        </table>
-                                    </article>
-                                </div>
-                </div>
-             </div>
 
 <!--Manage tab, here is where you will be able to change and add to most tables-->
-                <div class="tab-pane fade" id="manage">
+<div class="tabbable boxed parentTabs p-4">
+                <div class="tab-pane" id="manage">
                         <div class="tabbable">
                                                 
-                                    <p>Manage Menu</p>
+                                    <p>Control all your theaters from one easy place</p>
 
                                 <!--navigation buttons for manage functions-->
 
                                 <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                        <a href="#ManageMovies" class="nav-link" data-toggle="tab">Movies</a>
+                                        <a href="#ManageMovies" class="nav-link active" data-toggle="tab" onclick="adjustCols()">Movies</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#ManageTheaters" class="nav-link" data-toggle="tab">Theaters</a>
+                                        <a href="#ManageTheaters" class="nav-link" data-toggle="tab" onclick="adjustCols()">Theaters</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#ManageShowings" class="nav-link" data-toggle="tab">Showings</a>
+                                        <a href="#ManageShowings" class="nav-link" data-toggle="tab" onclick="adjustCols()">Showings</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#ManageTickets" class="nav-link" data-toggle="tab">Tickets</a>
+                                        <a href="#ManageTickets" class="nav-link" data-toggle="tab" onclick="adjustCols()">Tickets</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#ManageRooms" class="nav-link" data-toggle="tab">Rooms</a>
+                                        <a href="#ManageRooms" class="nav-link" data-toggle="tab" onclick="adjustCols()">Rooms</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="#ManageCustomers" class="nav-link" data-toggle="tab">Customers</a>
+                                        <a href="#ManageCustomers" class="nav-link" data-toggle="tab" onclick="adjustCols()">Customers</a>
                                     </li>
                                 </ul>
+
                                 <div class="tab-content">
                                 <!--movies search menu and table-->
                                     <div class="tab-pane fade show active" id="ManageMovies">
@@ -209,11 +80,12 @@
                                                 <div class="col-sm-2">
                                                     <!--control buttons for manage movies-->
                                                     <form>
-                                                    Select a Movie: <input type="text" class="form-control-sm" name="ManageMoviesSearch">Find Movie</select>
-                                                                   <input class="form-control-sm" type="button" value="Search">
-                                                                   <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteMovieModal">
-                                                                   <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addMovieModal">
-                                                                   <input class="form-control-sm" type="button" value="Edit" data-toggle="modal" data-target="#editMovieModal">
+                                                    <!-- Select a Movie: <input type="text" class="form-control-sm" name="ManageMoviesSearch">Find Movie</select> -->
+                                                                   <!-- <input class="form-control-sm" type="button" value="Search"> -->
+                                                                   <br> <!--add a lazy mans margin-->
+                                                                   <input class="btn btn-dark" type="button" value="Delete" data-toggle="modal" data-target="#deleteMovieModal">
+                                                                   <input class="btn btn-dark" type="button" value="Add" data-toggle="modal" data-target="#addMovieModal">
+                                                                   <input class="btn btn-dark" type="button" value="Edit" data-toggle="modal" data-target="#editMovieModal">
                                                     </form>
                                                 </div>
 <!--Region: Add Update Delete modals for Movies Table-->
@@ -337,7 +209,7 @@
 
 
                                                 <!--manage movie table-->
-                                                <table id="table_id" class="display">
+                                                <table id="manageMoviesTable" class="display">
                                                     <thead>
                                                         <tr>
                                                             <th>MovieID</th>
@@ -347,16 +219,6 @@
                                                             <th>Run Time</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        <!-- need JS for manage movies table-->>
-                                                        <tr>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                            <td></td>
-                                                        </tr>
-                                                    </tbody>
                                                 </table>
 
                                             </div>
@@ -370,11 +232,12 @@
                                             <div class="tab-pane fade show active" id="ManageTheaters">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Select a Theater: <input class="form-control-sm" type="text" name="TheatreNameSelect">Find Theater</select>
-                                                                   <input class="form-control-sm" type="button" value="Search">
-                                                                   <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteTheaterModal">
-                                                                   <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addTheaterModal">
-                                                                   <input class="form-control-sm" type="button" value="Edit" data-toggle="modal" data-target="#editTheaterModal">
+                                                    <!-- Select a Theater: <input class="form-control-sm" type="text" name="TheatreNameSelect">Find Theater</select> -->
+                                                    <br>
+                                                                   <!-- <input class="form-control-sm" type="button" value="Search"> -->
+                                                                   <input class="btn btn-dark" type="button" value="Delete" data-toggle="modal" data-target="#deleteTheaterModal">
+                                                                   <input class="btn btn-dark" type="button" value="Add" data-toggle="modal" data-target="#addTheaterModal">
+                                                                   <input class="btn btn-dark" type="button" value="Edit" id="editTheaterBut" data-toggle="modal" data-target="#editTheaterModal">
                                                     </form>
                                                 </div>
 
@@ -392,22 +255,46 @@
                                                                 <div class="modal-body">
                                                                     <form class="form-horizontal">
                                                                         <div class="form-group">
-                                                                            <label for="Name" class="col-sm-2 control-label">Name:</label>
+                                                                        <label for="TheaterNameAdd" class="col-sm-2 control-label">Name:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="TheaterName">
+                                                                                <input class="form-control" type="text" id="TheaterNameAdd" name="TheaterNameAdd" placeholder="">
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label for="Address" class="col-sm-2 control-label">Address:</label>
+                                                                            <label for="TheaterAddressAdd" class="col-sm-2 control-label">Address:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="TheaterAddress" name="TheaterAddress">
+                                                                                <input class="form-control" type="text" id="TheaterAddressAdd" name="TheaterAddressAdd" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="TheaterAddress2Add" class="col-sm-2 control-label">Address 2:</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input class="form-control" type="text" id="TheaterAddress2Add" name="TheaterAddress2Add" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="TheaterCityAdd" class="col-sm-2 control-label">City</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input class="form-control" type="text" id="TheaterCityAdd" name="TheaterCityAdd" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="TheaterStateAdd" class="col-sm-2 control-label">State</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input class="form-control" type="text" id="TheaterStateAdd" name="TheaterStateAdd" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="TheaterZipAdd" class="col-sm-3 control-label">Zip</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input class="form-control" type="text" id="TheaterZipAdd" name="TheaterZipAdd" placeholder=""> 
                                                                             </div>
                                                                         </div>
                                                                     </form>
                                                                 </div>
                                                                 <!--footer-->
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="submitNewTheaterBut">Ok</button>
                                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                                 </div>
                                                             </div>
@@ -427,21 +314,39 @@
                                                                 <div class="modal-body">
                                                                     <form class="form-horizontal">
                                                                         <div class="form-group">
-                                                                            <label for="Name" class="col-sm-2 control-label">Name:</label>
+                                                                            <label for="TheaterNameUpdate" class="col-sm-2 control-label">Name:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="TheaterNameUpdate" name="TheaterNameUpdate" placeholder="Pre-filled Name">
+                                                                                <input class="form-control" type="text" id="TheaterNameUpdate" name="TheaterNameUpdate" placeholder="">
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label for="Address" class="col-sm-2 control-label">Address:</label>
+                                                                            <label for="TheaterAddressUpdate" class="col-sm-2 control-label">Address:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="TheaterAddressUpdate" name="TheaterAddressUpdate" placeholder="Pre-filled address">
+                                                                                <input class="form-control" type="text" id="TheaterAddressUpdate" name="TheaterAddressUpdate" placeholder="">
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label for="RoomCount" class="col-sm-3 control-label">Room-Count:</label>
+                                                                            <label for="Address2" class="col-sm-2 control-label">Address 2:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="text" id="RoomCount" readonly placeholder="5"> 
+                                                                                <input class="form-control" type="text" id="Address2" name="TheaterAddress2Update" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="City" class="col-sm-2 control-label">City</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input class="form-control" type="text" id="City" name="TheaterCityUpdate" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="State" class="col-sm-2 control-label">State</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input class="form-control" type="text" id="State" name="TheaterStateUpdate" placeholder="">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="Zip" class="col-sm-3 control-label">Zip</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input class="form-control" type="text" id="Zip" name="TheaterZipUpdate" placeholder=""> 
                                                                             </div>
                                                                         </div>
                                                                     </form>
@@ -479,24 +384,18 @@
                                                     </div>
     <!--End Region-->
 
-                                                <table id="table_id" class="display">
+                                                <table id="manageTheatersTable" class="display">
                                                         <thead>
                                                             <tr>
                                                                 <th>TheaterID</th>
                                                                 <th>Name</th>
                                                                 <th>Address</th>
-                                                                <th>Rooms</th>
+                                                                <th>Address 2</th>
+                                                                <th>City</th>
+                                                                <th>State</th>
+                                                                <th>Zip</th>
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            <!-- need JS for manage theater table-->
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
                                                     </table>
                                             </div>
                                         </div>
@@ -508,13 +407,14 @@
                                             <div class="tab-pane fade show active" id="ManageShowings">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Select a Theater: <select class="form-control-sm" name="TheatreNameSelect">Find Theatre</select>
+                                                    <!-- Select a Theater: <select class="form-control-sm" name="TheatreNameSelect">Find Theatre</select>
                                                     Find a Room: <select class="form-control-sm" name="Room">Find Room</select>
                                                     Find a Movie: <input type="text" class="form-control-sm" name="MovieNameSelect">
-                                                                   <input class="form-control-sm" type="button" value="Search">
-                                                                   <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteShowingModal">
-                                                                   <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addShowingModal">
-                                                                   <input class="form-control-sm" type="button" value="Edit" data-toggle="modal" data-target="#editShowingModal">
+                                                                   <input class="form-control-sm" type="button" value="Search"> -->
+                                                                   <br>
+                                                                   <input class="btn btn-dark" type="button" value="Delete" data-toggle="modal" data-target="#deleteShowingModal">
+                                                                   <input class="btn btn-dark" type="button" value="Add" data-toggle="modal" data-target="#addShowingModal">
+                                                                   <input class="btn btn-dark" type="button" value="Edit" data-toggle="modal" data-target="#editShowingModal">
                                                     </form>
                                                 </div>
 
@@ -655,7 +555,7 @@
                                                     </div>
     <!--End Region-->                                                
 
-                                                <table id="table_id" class="display">
+                                                <table id="manageShowingsTable" class="display">
                                                         <thead>
                                                             <tr>
                                                                 <th>Theater</th>
@@ -664,15 +564,6 @@
                                                                 <th>Show Time</th>                                                                
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            <!--need JS for showings table on manage menu-->>
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
                                                     </table>
                                             </div>
                                         </div>
@@ -684,13 +575,14 @@
                                             <div class="tab-pane fade show active" id="ManageTickets">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Select a Theater: <select class="form-control-sm" name="TheatreSelect">Find Theatre</select>
+                                                    <!-- Select a Theater: <select class="form-control-sm" name="TheatreSelect">Find Theatre</select>
                                                     Find a Room: <select class="form-control-sm" name="RoomSelect">Find Room</select>
                                                     Find a Customer: <select class="form-control-sm" name="CustomerNameSelect">Find Room</select>
-                                                                   <input class="form-control-sm" type="button" value="Search">
-                                                                   <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteTicketModal">
-                                                                   <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addTicketModal">
-                                                                   <input class="form-control-sm" type="button" value="Edit" data-toggle="modal" data-target="#editTicketModal">
+                                                                   <input class="form-control-sm" type="button" value="Search"> -->
+                                                                   <br>
+                                                                   <input class="btn btn-dark" type="button" value="Delete" data-toggle="modal" data-target="#deleteTicketModal">
+                                                                   <input class="btn btn-dark" type="button" value="Add" data-toggle="modal" data-target="#addTicketModal">
+                                                                   <input class="btn btn-dark" type="button" value="Edit" data-toggle="modal" data-target="#editTicketModal">
                                                     </form>
                                                 </div>
 
@@ -862,18 +754,19 @@
                                             <div class="tab-pane fade show active" id="ManageRooms">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Select a Theater: <select class="form-control-sm" name="Theatre">Find Theatre</select>
-                                                                   <input class="form-control-sm" type="button" value="Search">
-                                                                   <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteRoomModal">
-                                                                   <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addRoomModal">
-                                                                   <input class="form-control-sm" type="button" value="Edit" data-toggle="modal" data-target="#editRoomModal">
+                                                    <!-- Select a Theater: <select class="form-control-sm" name="Theatre">Find Theatre</select> -->
+                                                                   <!-- <input class="form-control-sm" type="button" value="Search"> -->
+                                                                   <br>
+                                                                   <input class="btn btn-dark" type="button" value="Delete" data-toggle="modal" data-target="#deleteRoomModal">
+                                                                   <input class="btn btn-dark" type="button" value="Add" id="addRoomBut" data-toggle="modal" data-target="#addRoomModal">
+                                                                   <input class="btn btn-dark" type="button" value="Edit" id="editRoomBut" data-toggle="modal" data-target="#editRoomModal">
                                                     </form>
                                                 </div>
 
 <!--Region: Add Update Delete modals for tickets Table-->
                                                 <!--add modal for manage movies-->
                                                 <div class="modal" id="addRoomModal">
-                                                        <div class="modal-dialog modal-md modal-dialog-centered">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
                                                             <div class="modal-content">
                                                                 <!--header-->
                                                                 <div class="modal-header">
@@ -884,25 +777,28 @@
                                                                 <div class="modal-body">
                                                                     <form class="form-horizontal">
                                                                         <div class="form-group">
-                                                                            <label for="Theater" class="col-sm-4 control-label">Select Theater:</label>
+                                                                            <label for="addRoomTheaterSelect" class="col-sm-7 control-label">Select Theater:</label>
                                                                             <div class="col-sm-10">
-                                                                                <select id="Theater" class="form-control-sm" value="Theater">
-                                                                                    <option>Theater 1</option>
-                                                                                    <option>Theater 2</option>
-                                                                                    <option>Theater 3</option>
+                                                                                <select id="addRoomTheaterSelect" name="addRoomTheaterSelect" class="form-control-sm" value="">
                                                                                 </select>
                                                                             </div>
                                                                         </div>
+                                                                        <label for="addRoomCapacity" class="col-sm-7 control-label">Seating Capacity</label>
+                                                                            <div class="col-sm-10">
+                                                                                <input id="addRoomCapacity" name="addRoomCapacity" class="form-control-sm" type="number">
+                                                                            </div>
+                                                                        </div>
                                                                     </form>
-                                                                </div>
-                                                                <!--footer-->
+                                                                    <!--footer-->
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="addRoomSubmitBut">Ok</button>
                                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                                 </div>
+                                                                </div>
+                                                                
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    
     
                                                    <!--update delete modals for manage movies-->
                                                     <div class="modal" id="editRoomModal">
@@ -917,25 +813,31 @@
                                                                 <div class="modal-body">
                                                                         <form class="form-horizontal">
                                                                             <div class="form-group">
-                                                                                <label for="Theater" class="col-sm-4 control-label">Select Theater:</label>
+                                                                                <label for="editRoomTheaterSelect" class="col-sm-7 control-label">Select Theater:</label>
                                                                                 <div class="col-sm-10">
-                                                                                    <select id="Theater" class="form-control-sm" value="Theater">
-                                                                                        <option>Theater 1</option>
-                                                                                        <option>Theater 2</option>
-                                                                                        <option>Theater 3</option>
+                                                                                    <select id="editRoomTheaterSelect" name="editRoomTheaterSelect" class="form-control-sm" value="Theater">
+                                                                                        <option>Select Theater</option>
                                                                                     </select>
                                                                                 </div>
                                                                             </div>
+                                                                            <label for="editRoomCapacity" class="col-sm-7 control-label">Seating Capacity</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input id="editRoomCapacity" name="editRoomCapacity" class="form-control-sm" type="number">
+                                                                                </div>
+                                                                            </div>
                                                                         </form>
+                                                                        <!--footer-->
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-danger" id="editRoomSubmitBut" data-dismiss="modal">Ok</button>
+                                                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                                                        </div>
                                                                     </div>
-                                                                <!--footer-->
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
-                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
+                                                            
+                                                
+                                                    
     
                                                     <!--delete modals for manage movies-->
                                                     <div class="modal" id="deleteRoomModal">
@@ -961,20 +863,14 @@
                                                     </div>
     <!--End Region-->                                        
 
-                                                <table id="table_id" class="display">
+                                                <table id="manageRoomsTable" class="display">
                                                         <thead>
                                                             <tr>
-                                                                <th>Theater</th>
-                                                                <th>RoomID</th>                                                                
+                                                                <th>Room ID</th>
+                                                                <th>Capacity</th>
+                                                                <th>Theater ID</th>                                                                
                                                             </tr>
                                                         </thead>
-                                                        <tbody>
-                                                            
-                                                            <tr>
-                                                                <td></td>
-                                                                <td></td>
-                                                            </tr>
-                                                        </tbody>
                                                     </table>
                                             </div>
                                         </div>
@@ -986,12 +882,13 @@
                                             <div class="tab-pane fade show active" id="ManageCustomers">
                                                 <div class="col-sm-2">
                                                     <form>
-                                                    Last Name:  <input class="form-control-sm" type="text" id="CustomerLName">
+                                                    <!-- Last Name:  <input class="form-control-sm" type="text" id="CustomerLName">
                                                     First Name: <input class="form-control-sm" type="text" id="CustomerFName">
-                                                                <input class="form-control-sm" type="button" value="Search">
-                                                                <input class="form-control-sm" type="button" value="Delete" data-toggle="modal" data-target="#deleteCustomerModal">
-                                                                <input class="form-control-sm" type="button" value="Add" data-toggle="modal" data-target="#addCustomerModal">
-                                                                <input class="form-control-sm" type="button" value="Edit" data-toggle="modal" data-target="#editCustomerModal">
+                                                                <input class="form-control-sm" type="button" value="Search"> -->
+                                                                <br>
+                                                                <input class="btn btn-dark" type="button" value="Delete" data-toggle="modal" data-target="#deleteCustomerModal">
+                                                                <input class="btn btn-dark" type="button" value="Add" data-toggle="modal" data-target="#addCustomerModal">
+                                                                <input class="btn btn-dark" type="button" value="Edit" data-toggle="modal" data-target="#editCustomerModal" id="editCustomerBut">
                                                     </form>
                                                 </div>
 
@@ -1009,22 +906,26 @@
                                                             <div class="modal-body">
                                                                 <form class="form-horizontal">
                                                                     <div class="form-group">
-                                                                        <label for="Name" class="col-sm-2 control-label">Name:</label>
+                                                                        <label for="addCustomerFirstName" class="col-sm-4 control-label">First Name:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="Name">
+                                                                            <input class="form-control" type="text" id="addCustomerFirstName" name="FirstName" placeholder="First Name">
+                                                                        </div>
+                                                                        <label for="addCustomerLastName" class="col-sm-4 control-label">Last Name:</label>
+                                                                        <div class="col-sm-10">
+                                                                            <input class="form-control" type="text" id="addCustomerLastName" name="LastName" placeholder="Last Name">
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="DOB" class="col-sm-2 control-label">Date of Birth:</label>
+                                                                        <label for="addCustomerDOB" class="col-sm-4 control-label">Date of Birth:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="datetime" id="DOB">
+                                                                            <input class="form-control" type="date" id="addCustomerDOB" name ="DOB">
                                                                         </div>
                                                                     </div>
                                                                 </form>
                                                             </div>
                                                             <!--footer-->
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                                                <button type="button" class="btn btn-danger" id="submitNewCustomerBut" data-dismiss="modal">Ok</button>
                                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                             </div>
                                                         </div>
@@ -1044,15 +945,19 @@
                                                             <div class="modal-body">
                                                                 <form class="form-horizontal">
                                                                     <div class="form-group">
-                                                                        <label for="Name" class="col-sm-2 control-label">Name:</label>
+                                                                        <label for="customerEditFirstName" class="col-sm-4 control-label">First Name:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" id="Name" placeholder="Customer Name">
+                                                                            <input class="form-control" type="text" id="customerEditFirstName" name="FirstName" value="First Name">
+                                                                        </div>
+                                                                        <label for="customerEditLastName" class="col-sm-4 control-label">Last Name:</label>
+                                                                        <div class="col-sm-10">
+                                                                            <input class="form-control" type="text" id="customerEditLastName" name="LastName" placeholder="Last Name">
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="DOB" class="col-sm-2 control-label">Date of Birth:</label>
+                                                                        <label for="customerEditDOB" class="col-sm-4 control-label">Date of Birth:</label>
                                                                         <div class="col-sm-10">
-                                                                            <input class="form-control" type="datetime" id="DOB" placeholder="01/07/1967">
+                                                                            <input class="form-control" type="datetime" id="customerEditDOB" name="DOB" placeholder="01/07/1967">
                                                                         </div>
                                                                     </div>
                                                                 </form>
@@ -1078,7 +983,7 @@
                                                             <!--content form-->
                                                             <div class="modal-body">
                                                                 <form class="form-horizontal">
-                                                                    <button type="submit" class="btn btn-danger" data-dismiss="modal">Yes</button>
+                                                                    <button type="submit" class="btn btn-danger" data-dismiss="modal" id="deleteCustomerSubmit">Yes</button>
                                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                                                                 </form>
                                                             </div>
@@ -1090,11 +995,12 @@
                                                 </div>
 <!--End Region-->
 
-                                                <table id="table_id" class="display">
+                                                <table id="manageCustomerTable" class="display">
                                                         <thead>
                                                             <tr>
                                                                 <th>CustomerID</th>
-                                                                <th>Name</th>
+                                                                <th>First Name</th>
+                                                                <th>Last Name</th>
                                                                 <th>Date of Birth</th>
                                                             </tr>
                                                         </thead>
@@ -1115,7 +1021,7 @@
             </div>
         </div>
     </div>
-</div>
+
 
 </body>
 </html>
