@@ -94,7 +94,25 @@ fn main() {
             ],
         )
         .attach(DBConn::fairing())
+        .attach(ControlAllowOrigin)
         .launch();
+}
+
+use rocket::{Request, Response};
+use rocket::fairing::{Fairing, Info, Kind};
+
+struct ControlAllowOrigin;
+impl Fairing for ControlAllowOrigin {
+    fn info(&self) -> Info {
+       Info {
+            name: "ControlAlloworigin Header",
+            kind: Kind::Response,
+        }
+    }
+
+    fn on_response(&self, _: &Request, response: &mut Response) {
+        response.adjoin_raw_header("Access-Control-Allow-Origin", "https://web.engr.oregonstate.edu");
+    }
 }
 
 #[get("/ping")]
