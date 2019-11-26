@@ -88,7 +88,7 @@ impl std::convert::From<Rating> for Value {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Movie {
-    pub movie_id: u64,
+    pub movie_id: Option<u64>,
     pub name: String,
     pub rating: Option<Rating>,
     pub genre: Option<String>,
@@ -111,7 +111,7 @@ impl RowTranslation for Movie {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Room {
-    pub room_id: u64,
+    pub room_id: Option<u64>,
     pub capacity: u32,
     pub theater_id: u64,
 }
@@ -129,7 +129,7 @@ impl RowTranslation for Room {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Showing {
-    pub showing_id: u64,
+    pub showing_id: Option<u64>,
     pub time: NaiveDateTime,
     pub movie_id: u64,
     pub room_id: u64,
@@ -171,7 +171,7 @@ impl RowTranslation for DetailedShowing {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Theater {
-    pub theater_id: u64,
+    pub theater_id: Option<u64>,
     pub name: Option<String>,
     pub address: Option<String>,
     pub address_two: Option<String>,
@@ -197,7 +197,7 @@ impl RowTranslation for Theater {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Ticket {
-    pub ticket_id: u64,
+    pub ticket_id: Option<u64>,
     pub price: f64,
     pub showing_id: Option<u64>,
     pub customer_id: Option<u64>,
