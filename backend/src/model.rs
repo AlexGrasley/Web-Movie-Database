@@ -9,7 +9,7 @@ pub struct Customer {
     pub customer_id: Option<u64>,
     pub fname: Option<String>,
     pub lname: Option<String>,
-    pub birthday: NaiveDate,
+    pub birthday: Option<NaiveDate>,
 }
 
 impl RowTranslation for Customer {
@@ -91,7 +91,7 @@ pub struct Movie {
     pub movie_id: Option<u64>,
     pub name: String,
     pub rating: Option<Rating>,
-    pub genre: String,
+    pub genre: Option<String>,
     // minutes
     pub length: u64,
 }
@@ -148,9 +148,31 @@ impl RowTranslation for Showing {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct DetailedShowing {
+    pub showing_id: Option<u64>,
+    pub time: Option<NaiveDateTime>,
+    pub room_id: u64,
+    pub movie_name: String,
+    pub theater_name: String,
+}
+
+impl RowTranslation for DetailedShowing {
+    fn translate(row: Row) -> Self {
+        let (showing_id, time, room_id, movie_name, theater_name) = mysql::from_row(row);
+        DetailedShowing {
+            showing_id,
+            time,
+            room_id,
+            movie_name,
+            theater_name,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Theater {
     pub theater_id: Option<u64>,
-    pub name: String,
+    pub name: Option<String>,
     pub address: Option<String>,
     pub address_two: Option<String>,
     pub city: Option<String>,
@@ -189,6 +211,30 @@ impl RowTranslation for Ticket {
             price,
             showing_id,
             customer_id,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct DetailedTicket {
+    pub ticket_id: Option<u64>,
+    pub room_id: Option<u64>,
+    pub movie_name: Option<String>,
+    pub customer_name: Option<String>,
+    pub showtime: Option<NaiveDateTime>,
+    pub price: Option<f64>,
+}
+
+impl RowTranslation for DetailedTicket {
+    fn translate(row: Row) -> Self {
+        let (ticket_id, price, room_id, customer_name, showtime, movie_name) = mysql::from_row(row);
+        Self {
+            ticket_id,
+            price,
+            room_id,
+            customer_name,
+            showtime,
+            movie_name,
         }
     }
 }
