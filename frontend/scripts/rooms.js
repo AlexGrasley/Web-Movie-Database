@@ -2,7 +2,7 @@
 //region setup manage rooms
 ///////////////////////////
 
-let roomID = 0; // make variable for selected room ID. Making here so we can use it in a few sections
+var roomID = 0; // make variable for selected room ID. Making here so we can use it in a few sections
 function setupManageRooms(){
      $(document).ready( function () {
        var manageRoomsTable =  $('#manageRoomsTable').DataTable({
@@ -27,7 +27,7 @@ function setupManageRooms(){
         });
 
 
-        let roomID = 0; 
+        // let roomID = 0; 
         let theaterID = 0;
         //ensure that clicked row is selected, de-select all others, set customerID with selected row
         $('#manageRoomsTable tbody').on('click','tr', function(){
@@ -157,8 +157,9 @@ function setupManageRooms(){
                 let theaterID = $('#editRoomTheaterSelect').val();
                 let roomCap = $('#editRoomCapacity').val();
                 // let roomID is declared above
-                let submitUpdateRoom = "{\n\t\"room_id\":" + roomID + ",\n    \"capacity\":" +  roomCap + ",\n    \"theater_id\":" +  theaterID + "\n}";    
+                let submitUpdateRoom = "{ \"room_id\":" + roomID + ",    \"capacity\":" +  roomCap + ",    \"theater_id\":" +  theaterID + "}";    
                 // ajax callback and table refresh
+                console.log(submitUpdateRoom);
                 function wroteData(data){
                     console.log("I worked!");
                 
@@ -181,8 +182,8 @@ function setupManageRooms(){
                 'crossDomain': true,
                 "async": true,
                 "method": 'PATCH',
-                "url": 'http://flip1.engr.oregonstate.edu:2350/api/rooms/',
-                "Content-Type": 'application/json',
+                "url": 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
+                // "Content-Type": 'application/json',
                 "processData": false,
                 "headers": {
                     "Content-Type": "application/json",
@@ -192,7 +193,48 @@ function setupManageRooms(){
                 success: wroteData(data)
             })
         });
+
+
+     // delete selected room
+     $('#deleteRoomSubmit').on('click', function(data){
+      console.log('you clicked submit!');// testing
+         
+          let url =  'http://flip1.engr.oregonstate.edu:2350/api/rooms/' + roomID;    
+          // ajax callback and table refresh
+          console.log(url);
+          function wroteData(data){
+              console.log("I worked!");
+          
+              let timeOut = setTimeout(reload, 1000); //wait for results to update on the backend before refresh
+             function reload(){ // reload datatable after adding customer
+              if(  $.fn.dataTable.isDataTable( '#manageRoomsTable' ) ){ // make sure table is active
+               console.log("table is alive here");
+                 $('#manageRoomsTable').DataTable().ajax.reload();
+              }
+              else{
+               console.log("table is dead here");
+              }
+              return;
+              }
+          }
+      $.ajax({ // send data to backend through PATCH
+          'dataType': 'json',
+          'crossDomain': true,
+          "async": true,
+          "method": 'DELETE',
+          "url": url,
+          // "Content-Type": 'application/json',
+          "processData": false,
+          "headers": {
+              "Content-Type": "application/json",
+              "cache-control": "no-cache",
+            },
+          success: wroteData(data)
+      })
     });
+
+});
+
 
 }
 ///////////////////////////

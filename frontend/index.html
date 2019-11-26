@@ -23,6 +23,7 @@
         <script type="text/javascript" src="./scripts/theaters.js"></script>
         <script type="text/javascript" src="./scripts/rooms.js"></script>
         <script type="text/javascript" src="./scripts/tickets.js"></script>
+        <script type="text/javascript" src="./scripts/showings.js"></script>
  
     
     <!--start dataTable table.-->
@@ -30,7 +31,8 @@
 <script> $( window ).on("load", setupManageRooms);</script>
 <script> $( window ).on("load", setupManageCustomers);</script>
 <script> $( window ).on("load", setupManageTheaters);</script>
-<!-- <script> $( window ).on("load", setupShowings);</script> -->
+<script> $( window ).on("load", setupManageShowings);</script>
+<script> $( window ).on("load", setupManageTickets);</script>
 
 </head>
 
@@ -413,8 +415,8 @@
                                                                    <input class="form-control-sm" type="button" value="Search"> -->
                                                                    <br>
                                                                    <input class="btn btn-dark" type="button" value="Delete" data-toggle="modal" data-target="#deleteShowingModal">
-                                                                   <input class="btn btn-dark" type="button" value="Add" data-toggle="modal" data-target="#addShowingModal">
-                                                                   <input class="btn btn-dark" type="button" value="Edit" data-toggle="modal" data-target="#editShowingModal">
+                                                                   <input class="btn btn-dark" type="button" value="Add" id="addShowingBut" data-toggle="modal" data-target="#addShowingModal">
+                                                                   <input class="btn btn-dark" type="button" value="Edit" id="editShowingsBut" data-toggle="modal" data-target="#editShowingModal">
                                                     </form>
                                                 </div>
 
@@ -432,34 +434,28 @@
                                                                 <div class="modal-body">
                                                                     <form class="form-horizontal">
                                                                         <div class="form-group">
-                                                                            <label for="TheaterSelect" class="col-sm-4 control-label">Select Theater:</label>
+                                                                            <label for="AddShowingTheaterSelect" class="col-sm-4 control-label">Select Theater:</label>
                                                                             <div class="col-sm-10">
-                                                                                <select class="form-control" id="TheaterSelect" name="TheaterSelect">
-                                                                                    <option value="Option1">Option1</option>
-                                                                                    <option value="Option2">Option2</option>
+                                                                                <select class="form-control" id="AddShowingTheaterSelect" name="TheaterSelect">
                                                                                 </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label for="MovieSelect" class="col-sm-4 control-label">Pick a Movie:</label>
+                                                                            <label for="AddShowingMovieSelect" class="col-sm-4 control-label">Pick a Movie:</label>
                                                                             <div class="col-sm-10">
-                                                                                    <select class="form-control" id="MovieSelect" name="MovieSelect">
-                                                                                            <option value="Option1">Option1</option>
-                                                                                            <option value="Option2">Option2</option>
+                                                                                    <select class="form-control" id="AddShowingMovieSelect" name="MovieSelect">
                                                                                         </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label for="RoomSelect" class="col-sm-4 control-label">Pick a Room:</label>
+                                                                            <label for="AddShowingRoomSelect" class="col-sm-4 control-label">Pick a Room:</label>
                                                                             <div class="col-sm-10">
-                                                                                    <select class="form-control" id="RoomSelect" name="RoomSelect">
-                                                                                            <option value="Option1">Option1</option>
-                                                                                            <option value="Option2">Option2</option>
+                                                                                    <select class="form-control" id="AddShowingRoomSelect" name="RoomSelect">
                                                                                         </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
-                                                                            <label for="ShowingTime" class="col-sm-3 control-label">Show Time:</label>
+                                                                            <label for="AddShowingTime" class="col-sm-3 control-label">Show Time:</label>
                                                                             <div class="col-sm-10">
                                                                                 <input class="form-control" type="datetime" id="ShowingTime" name ="ShowingDateTime">
                                                                             </div>
@@ -488,43 +484,37 @@
                                                                 <div class="modal-body">
                                                                         <form class="form-horizontal">
                                                                             <div class="form-group">
-                                                                                <label for="TheaterSelect" class="col-sm-4 control-label">Select Theater:</label>
+                                                                                <label for="EditShowingTheaterSelect" class="col-sm-4 control-label">Select Theater:</label>
                                                                                 <div class="col-sm-10">
-                                                                                    <select class="form-control" id="TheaterSelect" name="TheaterSelect">
-                                                                                        <option value="Option1">Option1</option>
-                                                                                        <option value="Option2">Option2</option>
+                                                                                    <select class="form-control" id="EditShowingTheaterSelect" name="TheaterSelect">
                                                                                     </select>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group">
-                                                                                <label for="MovieSelect" class="col-sm-4 control-label">Pick a Movie:</label>
+                                                                                <label for="EditShowingMovieSelect" class="col-sm-4 control-label">Pick a Movie:</label>
                                                                                 <div class="col-sm-10">
-                                                                                        <select class="form-control" id="MovieSelect" name="MovieSelect">
-                                                                                                <option value="Option1">Option1</option>
-                                                                                                <option value="Option2">Option2</option>
+                                                                                        <select class="form-control" id="EditShowingMovieSelect" name="MovieSelect">
                                                                                             </select>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group">
-                                                                                <label for="RoomSelect" class="col-sm-4 control-label">Pick a Room:</label>
+                                                                                <label for="EditShowingRoomSelect" class="col-sm-4 control-label">Pick a Room:</label>
                                                                                 <div class="col-sm-10">
-                                                                                        <select class="form-control" id="RoomSelect" name="RoomSelect">
-                                                                                                <option value="Option1">Option1</option>
-                                                                                                <option value="Option2">Option2</option>
+                                                                                        <select class="form-control" id="EditShowingRoomSelect" name="RoomSelect">
                                                                                             </select>
                                                                                 </div>
                                                                             </div>
                                                                             <div class="form-group">
-                                                                                <label for="ShowingTime" class="col-sm-3 control-label">Show Time:</label>
+                                                                                <label for="EditShowingTime" class="col-sm-3 control-label">Show Time:</label>
                                                                                 <div class="col-sm-10">
-                                                                                    <input class="form-control" type="datetime" id="ShowingTime" name="ShowingDateTime" placeholder="12/20/2019 7:00pm">
+                                                                                    <input class="form-control" type="datetime" id="EditShowingTime" name="ShowingDateTime">
                                                                                 </div>
                                                                             </div>
                                                                         </form>
                                                                     </div>
                                                                 <!--footer-->
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                                                    <button type="button" class="btn btn-danger" id="EditShowingSubmitBut" data-dismiss="modal">Ok</button>
                                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                                 </div>
                                                             </div>
@@ -558,10 +548,11 @@
                                                 <table id="manageShowingsTable" class="display">
                                                         <thead>
                                                             <tr>
-                                                                <th>Theater</th>
-                                                                <th>RoomID</th>                                                                
-                                                                <th>Movie</th>                                                                
+                                                                <th>Showing ID</th>
                                                                 <th>Show Time</th>                                                                
+                                                                <th>Room No.</th>                                                                
+                                                                <th>Movie</th>                                                                
+                                                                <th>Theater</th>                                                                
                                                             </tr>
                                                         </thead>
                                                     </table>
@@ -721,11 +712,11 @@
                                                 </div>
 <!--End Region-->                                                
 
-                                                <table id="table_id" class="display">
+                                                <table id="manageTicketsTable" class="display">
                                                         <thead>
                                                             <tr>
-                                                                <th>Theater</th>
-                                                                <th>RoomID</th>                                                                
+                                                                <th>Ticket ID</th>
+                                                                <th>Room ID</th>                                                                
                                                                 <th>Movie</th>                                                                
                                                                 <th>Customer Name</th>                                                                
                                                                 <th>Show Time</th>                                                                
@@ -851,7 +842,7 @@
                                                                 <!--content form-->
                                                                 <div class="modal-body">
                                                                     <form class="form-horizontal">
-                                                                        <button type="submit" class="btn btn-danger" data-dismiss="modal">Yes</button>
+                                                                        <button type="submit" class="btn btn-danger" id="deleteRoomSubmit" data-dismiss="modal">Yes</button>
                                                                         <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                                                                     </form>
                                                                 </div>
@@ -892,8 +883,8 @@
                                                     </form>
                                                 </div>
 
-<!--Region: Add Update Delete modals for Movies Table-->
-                                                <!--add modal for manage movies-->
+<!--Region: Add Update Delete modals for customer Table-->
+                                                <!--add modal for manage customers-->
                                                 <div class="modal" id="addCustomerModal">
                                                     <div class="modal-dialog modal-md modal-dialog-centered">
                                                         <div class="modal-content">
@@ -964,7 +955,7 @@
                                                             </div>
                                                             <!--footer-->
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                                                <button type="button" class="btn btn-danger" id="editCustomerSubmitBut" data-dismiss="modal">Ok</button>
                                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                             </div>
                                                         </div>

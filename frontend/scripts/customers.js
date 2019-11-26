@@ -2,6 +2,9 @@
 //region Manage Customers
 // set up manage customer table and provide functions that interact with the table
 ///////////////////////////////
+
+var customerID = null; // make variable for selected customer ID
+
 function setupManageCustomers(){
     $(document).ready( function () {
       var manageCustomerTable = $('#manageCustomerTable').DataTable({
@@ -26,7 +29,7 @@ function setupManageCustomers(){
             ]
         });
 
-let customerID = null; // make variable for selected customer ID
+// var customerID = null; // make variable for selected customer ID
 //ensure that clicked row is selected, de-select all others, set customerID with selected row
 $('#manageCustomerTable tbody').on('click','tr', function(){
             if( $(this).hasClass('selected') ){
@@ -108,6 +111,95 @@ $('#manageCustomerTable tbody').on('click','tr', function(){
             success: wroteData(data)
         })
     });
+
+        // submit edited customer information
+        $('#editCustomerSubmitBut').on('click', function(data){
+    
+            console.log('you clicked submit!');// testing
+    
+            let fname = $('#customerEditFirstName').val();
+            let lname = $('#customerEditLastName').val();
+            let DOB = $('#customerEditDOB').val();
+            //let customerID is declared above
+            let submitUpdateCust = "{\"customer_id\":" + customerID + ",  \"fname\": \"" + fname + "\",\n    \"lname\": \"" + lname + "\",\n    \"birthday\": \"" + DOB + "\"\n}";
+                
+            // ajax callback and table refresh
+                console.log(submitUpdateCust);
+    
+            $.ajax({ // send data to backend through PATCH
+                'dataType': 'json',
+                'crossDomain': true,
+                "async": true,
+                "method": 'PATCH',
+                "url": 'http://flip1.engr.oregonstate.edu:2350/api/customers/',
+                // "Content-Type": 'application/json',
+                "processData": false,
+                "headers": {
+                    "Content-Type": "application/json",
+                    "cache-control": "no-cache",
+                  },
+                "data":  submitUpdateCust,
+                success: wroteData(data)
+            })
+
+            function wroteData(data){
+                console.log("I worked!");
+            
+                let timeOut = setTimeout(reload, 1000); //wait for results to update on the backend before refresh
+
+               function reload(){ // reload datatable after adding customer
+                if(  $.fn.dataTable.isDataTable( '#manageCustomerTable' ) ){ // make sure table is active
+                 console.log("table is alive here");
+                   $('#manageCustomerTable').DataTable().ajax.reload();
+                }
+                else{
+                 console.log("table is dead here");
+                }
+                return;
+                }
+            }
+        });
+
+
+     // delete selected room
+     $('#deleteCustomerSubmit').on('click', function(data){
+      console.log('you clicked submit!');// testing
+          let url =  'http://flip1.engr.oregonstate.edu:2350/api/customers/' + customerID;    
+          // ajax callback and table refresh
+          console.log(url);
+          function wroteData(data){
+              console.log("I worked!");
+          
+              let timeOut = setTimeout(reload, 1000); //wait for results to update on the backend before refresh
+             function reload(){ // reload datatable after adding customer
+              if(  $.fn.dataTable.isDataTable( '#manageCustomerTable' ) ){ // make sure table is active
+               console.log("table is alive here");
+                 $('#manageCustomerTable').DataTable().ajax.reload();
+              }
+              else{
+               console.log("table is dead here");
+              }
+              return;
+              }
+          }
+      $.ajax({ // send data to backend through PATCH
+          'dataType': 'json',
+          'crossDomain': true,
+          "async": true,
+          "method": 'DELETE',
+          "url": url,
+          // "Content-Type": 'application/json',
+          "processData": false,
+          "headers": {
+              "Content-Type": "application/json",
+              "cache-control": "no-cache",
+            },
+          success: wroteData(data)
+      })
+    });
+
+
+
 });
 
 //////////////////////
