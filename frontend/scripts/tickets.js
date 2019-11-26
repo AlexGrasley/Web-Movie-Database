@@ -3,10 +3,10 @@
 // set up manage customer table and provide functions that interact with the table
 ///////////////////////////////
 
-let showingID = null; // make variable for selected showing ID
-let showingstheaterID = null;
-let showingsmovieID = null;
-let showingsroomID = null;
+// let showingID = null; // make variable for selected showing ID
+// let showingstheaterID = null;
+// let showingsmovieID = null;
+// let showingsroomID = null;
 
 function setupManageTickets(){
     $(document).ready( function () {
