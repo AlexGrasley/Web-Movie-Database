@@ -135,7 +135,6 @@ pub struct Showing {
     pub room_id: u64,
 }
 
-
 impl RowTranslation for Showing {
     fn translate(row: Row) -> Self {
         let (showing_id, time, movie_id, room_id) = mysql::from_row(row);
@@ -169,7 +168,6 @@ impl RowTranslation for DetailedShowing {
         }
     }
 }
-
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Theater {
@@ -213,6 +211,30 @@ impl RowTranslation for Ticket {
             price,
             showing_id,
             customer_id,
+        }
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct DetailedTicket {
+    pub ticket_id: Option<u64>,
+    pub room_id: Option<u64>,
+    pub movie_name: Option<String>,
+    pub customer_name: Option<String>,
+    pub showtime: Option<NaiveDateTime>,
+    pub price: Option<f64>,
+}
+
+impl RowTranslation for DetailedTicket {
+    fn translate(row: Row) -> Self {
+        let (ticket_id, price, room_id, customer_name, showtime, movie_name) = mysql::from_row(row);
+        Self {
+            ticket_id,
+            price,
+            room_id,
+            customer_name,
+            showtime,
+            movie_name,
         }
     }
 }

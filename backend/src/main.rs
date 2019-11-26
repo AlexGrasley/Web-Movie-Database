@@ -89,6 +89,8 @@ fn main() {
                 list_tickets_handler,
                 delete_ticket_by_id_handler,
                 update_ticket_by_id_handler,
+                select_detailed_ticket_by_id_handler,
+                list_detailed_tickets_handler,
             ],
         )
         .attach(DBConn::fairing())
