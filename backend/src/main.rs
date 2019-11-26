@@ -67,6 +67,8 @@ fn main() {
                 list_showings_handler,
                 delete_showing_by_id_handler,
                 update_showing_by_id_handler,
+                select_detailed_showing_by_id_handler,
+                list_detailed_showings_handler,
             ],
         )
         .mount(
