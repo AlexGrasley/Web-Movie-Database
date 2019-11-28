@@ -22,6 +22,9 @@ function setupManageShowings(){
             "ajax":{
                 "url":'http://flip1.engr.oregonstate.edu:2350/api/showings/detailed/',
                 "method":'GET',
+                headers:{
+                    "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                },
                 "dataSrc": ''
             },
             columns: [
@@ -58,6 +61,9 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         dataType:'json',
                         "Content-Type": 'application/json',
                         "method":'GET',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         "url": url,
                         success: updateEditForm // data came back, prefill edit form
                     });
@@ -65,6 +71,9 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         dataType : 'json',
                         "Content-Type": 'application/json',
                         method: 'GET',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/theaters',
                         success: fillTheaterList
                     });
@@ -85,6 +94,31 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         dataType : 'json',
                         "Content-Type": 'application/json',
                         method: 'GET',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
+                        url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
+                        success: fillRoomList
+                    });
+                    function fillRoomList(data){
+                        let selectList = $('#EditShowingRoomSelect');
+                        $.each(data, function(index, value){
+                            if(data[index].room_id == showingsroomID){
+                                selectList.append('<option value= "' + data[index].room_id + '" selected = "selected">' + data[index].room_id + ' </option>')
+                            }
+                            else{
+                                selectList.append('<option value= "' + data[index].room_id + '">' + data[index].room_id + ' </option>')
+                            }
+                        });
+                    }
+
+                    $.ajax({
+                        dataType : 'json',
+                        "Content-Type": 'application/json',
+                        method: 'GET',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/movies',
                         success: fillMovieList
                     });
@@ -101,24 +135,6 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         });
                     }
 
-                    $.ajax({
-                        dataType : 'json',
-                        "Content-Type": 'application/json',
-                        method: 'GET',
-                        url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
-                        success: fillRoomList
-                    });
-                    function fillRoomList(data){
-                        let selectList = $('#EditShowingRoomSelect');
-                        $.each(data, function(index, value){
-                            if(data[index].room_id == showingsroomID){
-                                selectList.append('<option value= "' + data[index].room_id + '" selected = "selected">' + data[index].room_id + ' </option>')
-                            }
-                            else{
-                                selectList.append('<option value= "' + data[index].room_id + '">' + data[index].room_id + ' </option>')
-                            }
-                        });
-                    }
 
                     //ajax callback on sucess to fill form with selected room info
                     function updateEditForm(data){
@@ -136,6 +152,9 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         dataType : 'json',
                         "Content-Type": 'application/json',
                         method: 'GET',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/theaters',
                         success: fillTheaterList
                     });
@@ -155,6 +174,9 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         dataType : 'json',
                         "Content-Type": 'application/json',
                         method: 'GET',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/movies',
                         success: fillMovieList
                     });
@@ -293,9 +315,9 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
 
 
      // delete selected room
-     $('#deleteCustomerSubmit').on('click', function(data){
+     $('#deleteShowingSubmitBut').on('click', function(data){
       console.log('you clicked submit!');// testing
-          let url =  'http://flip1.engr.oregonstate.edu:2350/api/customers/' + customerID;    
+          let url =  'http://flip1.engr.oregonstate.edu:2350/api/showings/' + showingID;    
           // ajax callback and table refresh
           console.log(url);
           function wroteData(data){

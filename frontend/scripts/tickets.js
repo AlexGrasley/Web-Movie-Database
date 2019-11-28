@@ -7,7 +7,7 @@
 // let showingstheaterID = null;
 // let showingsmovieID = null;
 // let showingsroomID = null;
-
+let ticketID = 0;
 function setupManageTickets(){
     $(document).ready( function () {
       var manageTicketsTable = $('#manageTicketsTable').DataTable({
@@ -22,6 +22,9 @@ function setupManageTickets(){
             "ajax":{
                 "url":'http://flip1.engr.oregonstate.edu:2350/api/tickets/detailed/',
                 "method":'GET',
+                headers:{
+                    "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                },
                 "dataSrc": ''
             },
             columns: [
@@ -60,6 +63,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         "method":'GET',
                         "url": url,
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         success: updateEditForm // data came back, prefill edit form
                     });
                     $.ajax({
@@ -87,6 +93,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/movies',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         success: fillMovieList
                     });
 
@@ -107,6 +116,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         success: fillRoomList
                     });
                     function fillRoomList(data){
@@ -138,6 +150,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/theaters',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         success: fillTheaterList
                     });
 
@@ -157,6 +172,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/movies',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         success: fillMovieList
                     });
 
@@ -177,6 +195,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
+                        headers:{
+                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                        },
                         success: fillRoomList
                     });
                     function fillRoomList(data){
@@ -238,6 +259,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
             "headers": {
                 "Content-Type": "application/json",
                 "cache-control": "no-cache",
+                "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
               },
             "data":  submitNewCust,
             success: wroteData(data)
@@ -269,6 +291,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                 "headers": {
                     "Content-Type": "application/json",
                     "cache-control": "no-cache",
+                    "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
                   },
                 "data":  submitUpdateShowing,
                 success: wroteData(data)
@@ -294,9 +317,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
 
 
      // delete selected room
-     $('#deleteCustomerSubmit').on('click', function(data){
+     $('#DeleteTicketSubmitBut').on('click', function(data){
       console.log('you clicked submit!');// testing
-          let url =  'http://flip1.engr.oregonstate.edu:2350/api/customers/' + customerID;    
+          let url =  'http://flip1.engr.oregonstate.edu:2350/api/tickets/' + ticketID;    
           // ajax callback and table refresh
           console.log(url);
           function wroteData(data){
@@ -304,9 +327,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
           
               let timeOut = setTimeout(reload, 1000); //wait for results to update on the backend before refresh
              function reload(){ // reload datatable after adding customer
-              if(  $.fn.dataTable.isDataTable( '#manageShowingsTable' ) ){ // make sure table is active
+              if(  $.fn.dataTable.isDataTable( '#manageTicketsTable' ) ){ // make sure table is active
                console.log("table is alive here");
-                 $('#manageShowingsTable').DataTable().ajax.reload();
+                 $('#manageTicketsTable').DataTable().ajax.reload();
               }
               else{
                console.log("table is dead here");
@@ -325,6 +348,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
           "headers": {
               "Content-Type": "application/json",
               "cache-control": "no-cache",
+              "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
             },
           success: wroteData(data)
       })
