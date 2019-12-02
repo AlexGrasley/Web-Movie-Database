@@ -160,9 +160,9 @@ static SELECT_DETAILED_TICKETS: &str = "SELECT
     t.price,
     s.room_id,
     CONCAT(c.fname, \" \", c.lname) AS name,
-    s.time,
-    t.theater_id,
-    m.name AS movie_name
+    s.time as showtime,
+    m.name AS movie_name,
+    t.showing_id
     FROM tickets AS t
     LEFT JOIN showings AS s ON (s.showing_id = t.showing_id)
     LEFT JOIN customers AS c ON (c.customer_id = t.customer_id)
@@ -174,8 +174,8 @@ static SELECT_DETAILED_TICKET_BY_ID: &str = "SELECT
     s.room_id,
     CONCAT(c.fname, \" \", c.lname) AS name,
     s.time,
-    t.theater_id,
-    m.name AS movie_name
+    m.name AS movie_name,
+    t.showing_id
     FROM tickets AS t
     LEFT JOIN showings AS s ON (s.showing_id = t.showing_id)
     LEFT JOIN customers AS c ON (c.customer_id = t.customer_id)
