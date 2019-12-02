@@ -1,5 +1,5 @@
 use crate::model::RowTranslation;
-use crate::model::{Showing, DetailedShowing};
+use crate::model::{DetailedShowing, Showing};
 use crate::shared::*;
 use crate::DBConn;
 
@@ -19,7 +19,10 @@ pub fn select_showing_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Sh
 }
 
 #[get("/<id>/detailed")]
-pub fn select_detailed_showing_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<DetailedShowing>, Status> {
+pub fn select_detailed_showing_by_id_handler(
+    mut conn: DBConn,
+    id: u64,
+) -> Result<Json<DetailedShowing>, Status> {
     select_thing_by_id(&mut conn, id, SELECT_DETAILED_SHOWING_BY_ID)
         .map(Json)
         .map_err(|code| match code {
@@ -67,7 +70,9 @@ pub fn insert_showing_handler(
 }
 
 #[get("/detailed")]
-pub fn list_detailed_showings_handler(mut conn: DBConn) -> Result<Json<Vec<DetailedShowing>>, Status> {
+pub fn list_detailed_showings_handler(
+    mut conn: DBConn,
+) -> Result<Json<Vec<DetailedShowing>>, Status> {
     list_detailed_showings(&mut conn)
         .map(Json)
         .map_err(|code| match code {
@@ -119,16 +124,16 @@ pub fn update_showing_by_id_handler(
     mut conn: DBConn,
     showing: Json<Showing>,
 ) -> Result<Json<Showing>, Status> {
-    conn
-        .prep_exec(
-            UPDATE_SHOWING,
-            params! {
-                "showing_id" => &showing.showing_id,
-                "time" => &showing.time,
-                "movie_id" => &showing.movie_id,
-                "room_id" => &showing.room_id,
-            },
-        ).map_err(|_| Status::new(500, "Internal server error"))?;
+    conn.prep_exec(
+        UPDATE_SHOWING,
+        params! {
+            "showing_id" => &showing.showing_id,
+            "time" => &showing.time,
+            "movie_id" => &showing.movie_id,
+            "room_id" => &showing.room_id,
+        },
+    )
+    .map_err(|_| Status::new(500, "Internal server error"))?;
 
     match showing.showing_id {
         Some(id) => select_thing_by_id(&mut conn, id, SELECT_SHOWING_BY_ID)
@@ -155,19 +160,20 @@ static SELECT_DETAILED_SHOWINGS: &str = "SELECT
      s.time AS time,
      s.room_id,
      m.name AS movie_name,
-     t.name AS theater_name
+     t.name AS theater_name,
+     t.theater_id
      FROM showings AS s
      LEFT JOIN movies AS m ON (m.movie_id = s.movie_id)
      LEFT JOIN rooms AS r ON (r.room_id = s.room_id)
      LEFT JOIN theaters AS t ON (t.theater_id = r.room_id)";
 
-static SELECT_DETAILED_SHOWING_BY_ID: &str =
-    "SELECT
+static SELECT_DETAILED_SHOWING_BY_ID: &str = "SELECT
      s.showing_id,
      s.time AS time,
      s.room_id,
      m.name AS movie_name,
-     t.name AS theater_name
+     t.name AS theater_name,
+     t.theater_id
      FROM showings AS s
      LEFT JOIN movies AS m ON (m.movie_id = s.movie_id)
      LEFT JOIN rooms AS r ON (r.room_id = s.room_id)

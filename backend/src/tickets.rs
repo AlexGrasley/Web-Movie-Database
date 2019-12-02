@@ -1,5 +1,5 @@
 use crate::model::RowTranslation;
-use crate::model::{Ticket, DetailedTicket};
+use crate::model::{DetailedTicket, Ticket};
 use crate::shared::*;
 use crate::DBConn;
 
@@ -19,7 +19,10 @@ pub fn select_ticket_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<Tic
 }
 
 #[get("/<id>/detailed")]
-pub fn select_detailed_ticket_by_id_handler(mut conn: DBConn, id: u64) -> Result<Json<DetailedTicket>, Status> {
+pub fn select_detailed_ticket_by_id_handler(
+    mut conn: DBConn,
+    id: u64,
+) -> Result<Json<DetailedTicket>, Status> {
     select_thing_by_id(&mut conn, id, SELECT_DETAILED_TICKET_BY_ID)
         .map(Json)
         .map_err(|code| match code {
@@ -91,7 +94,9 @@ pub fn list_tickets(conn: &mut DBConn) -> Result<Vec<Ticket>, u64> {
 }
 
 #[get("/detailed")]
-pub fn list_detailed_tickets_handler(mut conn: DBConn) -> Result<Json<Vec<DetailedTicket>>, Status> {
+pub fn list_detailed_tickets_handler(
+    mut conn: DBConn,
+) -> Result<Json<Vec<DetailedTicket>>, Status> {
     list_detailed_tickets(&mut conn)
         .map(Json)
         .map_err(|code| match code {
@@ -119,16 +124,16 @@ pub fn update_ticket_by_id_handler(
     mut conn: DBConn,
     ticket: Json<Ticket>,
 ) -> Result<Json<Ticket>, Status> {
-    conn
-        .prep_exec(
-            UPDATE_TICKET,
-            params! {
-                "ticket_id" => &ticket.ticket_id,
-                "price" => &ticket.price,
-                "showing_id" => &ticket.showing_id,
-                "customer_id" => &ticket.customer_id,
-            },
-        ).map_err(|_| Status::new(500, "Internal server error"))?;
+    conn.prep_exec(
+        UPDATE_TICKET,
+        params! {
+            "ticket_id" => &ticket.ticket_id,
+            "price" => &ticket.price,
+            "showing_id" => &ticket.showing_id,
+            "customer_id" => &ticket.customer_id,
+        },
+    )
+    .map_err(|_| Status::new(500, "Internal server error"))?;
 
     match ticket.ticket_id {
         Some(id) => select_thing_by_id(&mut conn, id, SELECT_TICKET_BY_ID)
@@ -150,26 +155,26 @@ static INSERT_TICKET: &str =
 static UPDATE_TICKET: &str =
     "UPDATE tickets SET `price` = :price, showing_id = :showing_id, `customer_id` = :customer_id WHERE ticket_id = :ticket_id";
 
-static SELECT_DETAILED_TICKETS: &str =
-    "SELECT
+static SELECT_DETAILED_TICKETS: &str = "SELECT
     t.ticket_id,
     t.price,
     s.room_id,
     CONCAT(c.fname, \" \", c.lname) AS name,
     s.time,
+    t.theater_id,
     m.name AS movie_name
     FROM tickets AS t
     LEFT JOIN showings AS s ON (s.showing_id = t.showing_id)
     LEFT JOIN customers AS c ON (c.customer_id = t.customer_id)
     LEFT JOIN movies AS m ON (m.movie_id = s.movie_id)";
 
-static SELECT_DETAILED_TICKET_BY_ID: &str =
-    "SELECT
+static SELECT_DETAILED_TICKET_BY_ID: &str = "SELECT
     t.ticket_id,
     t.price,
     s.room_id,
     CONCAT(c.fname, \" \", c.lname) AS name,
     s.time,
+    t.theater_id,
     m.name AS movie_name
     FROM tickets AS t
     LEFT JOIN showings AS s ON (s.showing_id = t.showing_id)

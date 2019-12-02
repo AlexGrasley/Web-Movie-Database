@@ -98,20 +98,23 @@ fn main() {
         .launch();
 }
 
-use rocket::{Request, Response};
 use rocket::fairing::{Fairing, Info, Kind};
+use rocket::{Request, Response};
 
 struct ControlAllowOrigin;
 impl Fairing for ControlAllowOrigin {
     fn info(&self) -> Info {
-       Info {
+        Info {
             name: "ControlAlloworigin Header",
             kind: Kind::Response,
         }
     }
 
     fn on_response(&self, _: &Request, response: &mut Response) {
-        response.adjoin_raw_header("Access-Control-Allow-Origin", "http://web.engr.oregonstate.edu");
+        response.adjoin_raw_header(
+            "Access-Control-Allow-Origin",
+            "http://web.engr.oregonstate.edu",
+        );
     }
 }
 
