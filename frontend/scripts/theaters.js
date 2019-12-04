@@ -181,9 +181,9 @@ $(document).ready(function(){
           
               let timeOut = setTimeout(reload, 1000); //wait for results to update on the backend before refresh
              function reload(){ // reload datatable after adding customer
-              if(  $.fn.dataTable.isDataTable( '#manageMoviesTable' ) ){ // make sure table is active
+              if(  $.fn.dataTable.isDataTable( '#manageTheatersTable' ) ){ // make sure table is active
                console.log("table is alive here");
-                 $('#manageMoviesTable').DataTable().ajax.reload();
+                 $('#manageTheatersTable').DataTable().ajax.reload();
               }
               else{
                console.log("table is dead here");
