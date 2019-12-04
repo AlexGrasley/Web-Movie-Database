@@ -75,15 +75,15 @@ pub fn list_rooms(conn: &mut DBConn) -> Result<Vec<Room>, u64> {
 
 #[patch("/", format = "json", data = "<room>")]
 pub fn update_room_by_id_handler(mut conn: DBConn, room: Json<Room>) -> Result<Json<Room>, Status> {
-    conn
-        .prep_exec(
-            UPDATE_ROOM,
-            params! {
-                "room_id" => &room.room_id,
-                "capacity" => &room.capacity,
-                "theater_id" => &room.theater_id,
-            },
-        ).map_err(|_| Status::new(500, "Internal server error"))?;
+    conn.prep_exec(
+        UPDATE_ROOM,
+        params! {
+            "room_id" => &room.room_id,
+            "capacity" => &room.capacity,
+            "theater_id" => &room.theater_id,
+        },
+    )
+    .map_err(|_| Status::new(500, "Internal server error"))?;
 
     match room.room_id {
         Some(id) => select_thing_by_id(&mut conn, id, SELECT_ROOM_BY_ID)

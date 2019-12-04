@@ -87,19 +87,19 @@ pub fn update_theater_by_id_handler(
     mut conn: DBConn,
     theater: Json<Theater>,
 ) -> Result<Json<Theater>, Status> {
-     conn
-        .prep_exec(
-            UPDATE_THEATER,
-            params! {
-                "theater_id" => &theater.theater_id,
-                "name" => &theater.name,
-                "address" => &theater.address,
-                "address_two" => &theater.address_two,
-                "city" => &theater.city,
-                "state" => &theater.state,
-                "zip" => &theater.zip,
-            },
-        ).map_err(|_| Status::new(500, "Internal server error"))?;
+    conn.prep_exec(
+        UPDATE_THEATER,
+        params! {
+            "theater_id" => &theater.theater_id,
+            "name" => &theater.name,
+            "address" => &theater.address,
+            "address_two" => &theater.address_two,
+            "city" => &theater.city,
+            "state" => &theater.state,
+            "zip" => &theater.zip,
+        },
+    )
+    .map_err(|_| Status::new(500, "Internal server error"))?;
 
     match theater.theater_id {
         Some(id) => select_thing_by_id(&mut conn, id, SELECT_THEATER_BY_ID)

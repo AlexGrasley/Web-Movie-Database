@@ -80,17 +80,17 @@ pub fn update_movie_by_id_handler(
     mut conn: DBConn,
     movie: Json<Movie>,
 ) -> Result<Json<Movie>, Status> {
-    conn
-        .prep_exec(
-            UPDATE_MOVIE,
-            params! {
-                "movie_id" => &movie.movie_id,
-                "name" => &movie.name,
-                "rating" => movie.rating,
-                "genre" => &movie.genre,
-                "length" => movie.length
-            },
-        ).map_err(|_| Status::new(500, "Internal server error"))?;
+    conn.prep_exec(
+        UPDATE_MOVIE,
+        params! {
+            "movie_id" => &movie.movie_id,
+            "name" => &movie.name,
+            "rating" => movie.rating,
+            "genre" => &movie.genre,
+            "length" => movie.length
+        },
+    )
+    .map_err(|_| Status::new(500, "Internal server error"))?;
 
     match movie.movie_id {
         Some(id) => select_thing_by_id(&mut conn, id, SELECT_MOVIE_BY_ID)

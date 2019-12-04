@@ -84,16 +84,16 @@ pub fn update_customer_by_id_handler(
     mut conn: DBConn,
     customer: Json<Customer>,
 ) -> Result<Json<Customer>, Status> {
-    conn
-        .prep_exec(
-            UPDATE_CUSTOMER,
-            params! {
-                "customer_id" => &customer.customer_id,
-                "fname" => &customer.fname,
-                "lname" => &customer.lname,
-                "birthday" => &customer.birthday,
-            },
-        ).map_err(|_| Status::new(500, "Internal server error"))?;
+    conn.prep_exec(
+        UPDATE_CUSTOMER,
+        params! {
+            "customer_id" => &customer.customer_id,
+            "fname" => &customer.fname,
+            "lname" => &customer.lname,
+            "birthday" => &customer.birthday,
+        },
+    )
+    .map_err(|_| Status::new(500, "Internal server error"))?;
 
     match customer.customer_id {
         Some(id) => select_thing_by_id(&mut conn, id, SELECT_CUSTOMER_BY_ID)
