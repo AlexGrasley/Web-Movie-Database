@@ -112,10 +112,11 @@ impl Fairing for ControlAllowOrigin {
     }
 
     fn on_response(&self, _: &Request, response: &mut Response) {
-        response.adjoin_raw_header(
-            "Access-Control-Allow-Origin",
-            "http://web.engr.oregonstate.edu",
-        );
+        // response.adjoin_raw_header(
+        //     "Access-Control-Allow-Origin",
+        //     "http://web.engr.oregonstate.edu",
+        // );
+        response.adjoin_raw_header("Access-Control-Allow-Origin", "*");
     }
 }
 
