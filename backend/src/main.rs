@@ -28,7 +28,10 @@ pub struct DBConn(mysql::Conn);
 
 fn main() {
     rocket::ignite()
-        .mount("/api", routes![ping, create_tables, drop_tables, insert])
+        .mount(
+            "/api",
+            routes![ping, create_tables, drop_tables, insert, options_handler],
+        )
         .mount(
             "/api/movies",
             routes![
@@ -94,61 +97,18 @@ fn main() {
             ],
         )
         .attach(DBConn::fairing())
-        .attach(ControlAllowOrigin)
-        .attach(ControlExposeHeaders)
-        .attach(ControlAllowMethods)
         .launch();
 }
 
-use rocket::fairing::{Fairing, Info, Kind};
-use rocket::{Request, Response};
-
-struct ControlAllowOrigin;
-impl Fairing for ControlAllowOrigin {
-    fn info(&self) -> Info {
-        Info {
-            name: "ControlAllowOrigin Header",
-            kind: Kind::Response,
-        }
-    }
-
-    fn on_response(&self, _: &Request, response: &mut Response) {
-        // response.adjoin_raw_header(
-        //     "Access-Control-Allow-Origin",
-        //     "http://web.engr.oregonstate.edu",
-        // );
-        response.adjoin_raw_header("Access-Control-Allow-Origin", "*");
-    }
-}
-
-struct ControlExposeHeaders;
-impl Fairing for ControlExposeHeaders {
-    fn info(&self) -> Info {
-        Info {
-            name: "ControlExposeHeaders Header",
-            kind: Kind::Response,
-        }
-    }
-
-    fn on_response(&self, _: &Request, response: &mut Response) {
-        response.adjoin_raw_header("Access-Control-Expose-Headers", "*");
-    }
-}
-
-struct ControlAllowMethods;
-impl Fairing for ControlAllowMethods {
-    fn info(&self) -> Info {
-        Info {
-            name: "ControlAllowMethods Header",
-            kind: Kind::Response,
-        }
-    }
-
-    fn on_response(&self, req: &Request, response: &mut Response) {
-        if req.method() == rocket::http::Method::Options {
-            response.adjoin_raw_header("Access-Control-Allow-Methods", "*");
-        }
-    }
+use rocket::route;
+use rocket::Response;
+#[route(OPTIONS, path = "/")]
+fn options_handler<'a>() -> Response<'a> {
+    Response::build()
+        .raw_header("Access-Control-Allow-Origin", "http://host.tld")
+        .raw_header("Access-Control-Allow-Methods", "OPTIONS, POST")
+        .raw_header("Access-Control-Allow-Headers", "Content-Type")
+        .finalize()
 }
 
 #[get("/ping")]
