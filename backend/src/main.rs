@@ -106,7 +106,7 @@ use rocket::Response;
 fn options_handler<'a>() -> Response<'a> {
     Response::build()
         .raw_header("Access-Control-Allow-Origin", "http://host.tld")
-        .raw_header("Access-Control-Allow-Methods", "OPTIONS, POST")
+        .raw_header("Access-Control-Allow-Methods", "OPTIONS, POST, PATCH, GET")
         .raw_header("Access-Control-Allow-Headers", "Content-Type")
         .finalize()
 }
