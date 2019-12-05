@@ -112,8 +112,8 @@ impl RowTranslation for Movie {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Room {
     pub room_id: Option<u64>,
-    pub capacity: u32,
-    pub theater_id: u64,
+    pub capacity: Option<u32>,
+    pub theater_id: Option<u64>,
 }
 
 impl RowTranslation for Room {
@@ -130,9 +130,9 @@ impl RowTranslation for Room {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Showing {
     pub showing_id: Option<u64>,
-    pub time: NaiveDateTime,
-    pub movie_id: u64,
-    pub room_id: u64,
+    pub time: Option<NaiveDateTime>,
+    pub movie_id: Option<u64>,
+    pub room_id: Option<u64>,
 }
 
 impl RowTranslation for Showing {
@@ -151,20 +151,23 @@ impl RowTranslation for Showing {
 pub struct DetailedShowing {
     pub showing_id: Option<u64>,
     pub time: Option<NaiveDateTime>,
-    pub room_id: u64,
-    pub movie_name: String,
-    pub theater_name: String,
+    pub room_id: Option<u64>,
+    pub movie_name: Option<String>,
+    pub theater_name: Option<String>,
+    pub theater_id: Option<u64>,
 }
 
 impl RowTranslation for DetailedShowing {
     fn translate(row: Row) -> Self {
-        let (showing_id, time, room_id, movie_name, theater_name) = mysql::from_row(row);
+        let (showing_id, time, room_id, movie_name, theater_name, theater_id) =
+            mysql::from_row(row);
         DetailedShowing {
             showing_id,
             time,
             room_id,
             movie_name,
             theater_name,
+            theater_id,
         }
     }
 }
@@ -198,7 +201,7 @@ impl RowTranslation for Theater {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Ticket {
     pub ticket_id: Option<u64>,
-    pub price: f64,
+    pub price: Option<f64>,
     pub showing_id: Option<u64>,
     pub customer_id: Option<u64>,
 }
