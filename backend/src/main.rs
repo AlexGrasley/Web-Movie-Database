@@ -102,7 +102,6 @@ fn main() {
         )
         .attach(DBConn::fairing())
         .attach(RedirectOptions)
-        .attach(ControlAllowOrigin)
         .launch();
 }
 
@@ -110,31 +109,13 @@ fn main() {
 fn options_handler<'a>() -> Response<'a> {
     Response::build()
         .raw_header("Access-Control-Allow-Origin", "*")
-        .raw_header("Access-Control-Allow-Methods", "OPTIONS, POST, PATCH, GET")
-        .raw_header("Access-Control-Allow-Headers", "Content-Type")
+        .raw_header("Access-Control-Allow-Methods", "*")
+        .raw_header("Access-Control-Allow-Headers", "*")
         .finalize()
 }
 
 use rocket::fairing::{Fairing, Info, Kind};
 use rocket::Request;
-
-struct ControlAllowOrigin;
-impl Fairing for ControlAllowOrigin {
-    fn info(&self) -> Info {
-        Info {
-            name: "ControlAllowOrigin Header",
-            kind: Kind::Response,
-        }
-    }
-
-    fn on_response(&self, _: &Request, response: &mut Response) {
-        // response.adjoin_raw_header(
-        //     "Access-Control-Allow-Origin",
-        //     "http://web.engr.oregonstate.edu",
-        // );
-        response.adjoin_raw_header("Access-Control-Allow-Origin", "*");
-    }
-}
 
 struct RedirectOptions;
 impl Fairing for RedirectOptions {
