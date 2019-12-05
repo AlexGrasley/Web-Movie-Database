@@ -12,7 +12,7 @@ mod theater;
 mod tickets;
 
 use mysql;
-use rocket::{self, get, http::uri::Origin, options, routes, Data, Response};
+use rocket::{self, get, http::uri::Origin, options, routes, Data, Method, Response};
 use rocket_contrib::database;
 
 use customers::*;
@@ -97,6 +97,7 @@ fn main() {
             ],
         )
         .attach(DBConn::fairing())
+        .attach(RedirectOptions)
         .attach(ControlAllowOrigin)
         .launch();
 }
@@ -141,7 +142,9 @@ impl Fairing for RedirectOptions {
     }
 
     fn on_request(&self, request: &mut Request, _: &Data) {
-        request.set_uri(Origin::parse("/").unwrap());
+        if request.method() == Method::Options {
+            request.set_uri(Origin::parse("/").unwrap());
+        }
     }
 }
 
