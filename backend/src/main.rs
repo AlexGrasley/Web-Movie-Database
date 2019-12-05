@@ -12,7 +12,7 @@ mod theater;
 mod tickets;
 
 use mysql;
-use rocket::{self, get, options, routes, Response};
+use rocket::{self, get, http::uri::Origin, options, routes, Data, Response};
 use rocket_contrib::database;
 
 use customers::*;
@@ -128,6 +128,20 @@ impl Fairing for ControlAllowOrigin {
         //     "http://web.engr.oregonstate.edu",
         // );
         response.adjoin_raw_header("Access-Control-Allow-Origin", "*");
+    }
+}
+
+struct RedirectOptions;
+impl Fairing for RedirectOptions {
+    fn info(&self) -> Info {
+        Info {
+            name: "RedirectOptions Header",
+            kind: Kind::Request,
+        }
+    }
+
+    fn on_request(&self, request: &mut Request, _: &Data) {
+        request.set_uri(Origin::parse("/").unwrap());
     }
 }
 
