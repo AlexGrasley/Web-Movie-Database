@@ -102,7 +102,7 @@ fn main() {
 
 use rocket::route;
 use rocket::Response;
-#[route(OPTIONS, path = "/")]
+#[route(OPTIONS, path = "*")]
 fn options_handler<'a>() -> Response<'a> {
     Response::build()
         .raw_header(
