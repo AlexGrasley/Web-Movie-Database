@@ -437,6 +437,7 @@
                                                                             <label for="AddShowingTheaterSelect" class="col-sm-4 control-label">Select Theater:</label>
                                                                             <div class="col-sm-10">
                                                                                 <select class="form-control" id="AddShowingTheaterSelect" name="TheaterSelect">
+                                                                                    <option value="" selected>pick a theater</option>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
@@ -444,6 +445,7 @@
                                                                             <label for="AddShowingRoomSelect" class="col-sm-4 control-label">Pick a Room:</label>
                                                                             <div class="col-sm-10">
                                                                                     <select class="form-control" id="AddShowingRoomSelect" name="RoomSelect">
+                                                                                        <option value="" selected>pick a room</option>
                                                                                         </select>
                                                                             </div>
                                                                         </div>
@@ -451,20 +453,21 @@
                                                                             <label for="AddShowingMovieSelect" class="col-sm-4 control-label">Pick a Movie:</label>
                                                                             <div class="col-sm-10">
                                                                                     <select class="form-control" id="AddShowingMovieSelect" name="MovieSelect">
+                                                                                        <option value="" selected>pick a movie</option>
                                                                                         </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="form-group">
                                                                             <label for="AddShowingTime" class="col-sm-3 control-label">Show Time:</label>
                                                                             <div class="col-sm-10">
-                                                                                <input class="form-control" type="datetime" id="ShowingTime" name ="ShowingDateTime">
+                                                                                <input class="form-control" type="text" id="AddShowingTime" name ="ShowingDateTime">
                                                                             </div>
                                                                         </div>
                                                                     </form>
                                                                 </div>
                                                                 <!--footer-->
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                                                    <button type="button" class="btn btn-danger" id="AddShowingSubmitBut" data-dismiss="modal">Ok</button>
                                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                                 </div>
                                                             </div>
@@ -477,7 +480,7 @@
                                                             <div class="modal-content">
                                                                 <!--header-->
                                                                 <div class="modal-header">
-                                                                    <h4 class="modal-title">Edit Movie</h4>
+                                                                    <h4 class="modal-title">Edit Showing</h4>
                                                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                                 </div>
                                                                 <!--content form-->
@@ -487,6 +490,7 @@
                                                                                 <label for="EditShowingTheaterSelect" class="col-sm-4 control-label">Select Theater:</label>
                                                                                 <div class="col-sm-10">
                                                                                     <select class="form-control" id="EditShowingTheaterSelect" name="TheaterSelect">
+                                                                                        <option selected>pick a theater</option>
                                                                                     </select>
                                                                                 </div>
                                                                             </div>
@@ -494,6 +498,7 @@
                                                                                 <label for="EditShowingRoomSelect" class="col-sm-4 control-label">Pick a Room:</label>
                                                                                 <div class="col-sm-10">
                                                                                         <select class="form-control" id="EditShowingRoomSelect" name="RoomSelect">
+                                                                                            <option selected>pick a room</option>
                                                                                             </select>
                                                                                 </div>
                                                                             </div>
@@ -501,6 +506,7 @@
                                                                                 <label for="EditShowingMovieSelect" class="col-sm-4 control-label">Pick a Movie:</label>
                                                                                 <div class="col-sm-10">
                                                                                         <select class="form-control" id="EditShowingMovieSelect" name="MovieSelect">
+                                                                                            <option selected>pick a movie</option>
                                                                                             </select>
                                                                                 </div>
                                                                             </div>
@@ -553,6 +559,7 @@
                                                                 <th>Room No.</th>                                                                
                                                                 <th>Movie</th>                                                                
                                                                 <th>Theater</th>                                                                
+                                                                <th>Theater ID</th>                                                                
                                                             </tr>
                                                         </thead>
                                                     </table>
@@ -572,8 +579,8 @@
                                                                    <input class="form-control-sm" type="button" value="Search"> -->
                                                                    <br>
                                                                    <input class="btn btn-dark" type="button" value="Delete" data-toggle="modal" data-target="#deleteTicketModal">
-                                                                   <input class="btn btn-dark" type="button" value="Add" data-toggle="modal" data-target="#addTicketModal">
-                                                                   <input class="btn btn-dark" type="button" value="Edit" data-toggle="modal" data-target="#editTicketModal">
+                                                                   <input class="btn btn-dark" type="button" value="Add" id="addTicketBut" data-toggle="modal" data-target="#addTicketModal">
+                                                                   <input class="btn btn-dark" type="button" value="Edit" id="editTicketBut" data-toggle="modal" data-target="#editTicketModal">
                                                     </form>
                                                 </div>
 
@@ -591,40 +598,37 @@
                                                             <div class="modal-body">
                                                                 <form class="form-horizontal">
                                                                     <div class="form-group">
-                                                                        <label for="Customer" class="col-sm-4 control-label">Select Customer:</label>
+                                                                        <label for="AddTicketCustomer" class="col-sm-4 control-label">Select Customer:</label>
                                                                         <div class="col-sm-10">
-                                                                            <select id="Customer" class="form-control-sm" value="Customer" name="CustomerSelectMenu">
-                                                                                <option>Customer1 Name DOB</option>
-                                                                                <option>Customer2 Name DOB</option>
-                                                                                <option>Customer3 Name DOB</option>
+                                                                            <select id="AddTicketCustomer" class="form-control-sm" value="Customer" name="CustomerSelectMenu">
                                                                             </select>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="ShowTime" class="col-sm-4 control-label">Pick Show-Time:</label>
+                                                                        <label for="AddTicketMovie" class="col-sm-2 control-label">Movie:</label>
                                                                         <div class="col-sm-10">
-                                                                                <select id="ShowTime" class="form-control-sm" value="Show-Time" name="ShowingSelectMenu">
-                                                                                        <option>DateTime 1</option>
-                                                                                        <option>DateTime 2</option>
-                                                                                        <option>DateTime 3</option>
+                                                                                <select id="AddTicketMovie" class="form-control-sm" value="Movie" name="MovieSelectMenu">
+                                                                                    </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="AddTicketShowTime" class="col-sm-4 control-label">Pick Show-Time:</label>
+                                                                        <div class="col-sm-10">
+                                                                                <select id="AddTicketShowTime" class="form-control-sm" value="Show-Time" name="ShowingSelectMenu">
                                                                                 </select>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="Movie" class="col-sm-2 control-label">Movie:</label>
+                                                                        <label for="AddTicketPrice" class="col-sm-4 control-label">Price</label>
                                                                         <div class="col-sm-10">
-                                                                                <select id="Movie" class="form-control-sm" value="Movie" name="MovieSelectMenu">
-                                                                                        <option>Movie Title 1</option>
-                                                                                        <option>Movie Title 2</option>
-                                                                                        <option>Movie Title 3</option>
-                                                                                    </select>
+                                                                                <input type="number" id="AddTicketPrice" class="form-control-sm" value="">
                                                                         </div>
                                                                     </div>
                                                                 </form>
                                                             </div>
                                                             <!--footer-->
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                                                <button type="button" class="btn btn-danger" id="AddTicketSubmit" data-dismiss="modal">Ok</button>
                                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                             </div>
                                                         </div>
@@ -648,40 +652,37 @@
                                                              <div class="modal-body">
                                                                 <form class="form-horizontal">
                                                                     <div class="form-group">
-                                                                        <label for="Customer" class="col-sm-4 control-label">Select Customer:</label>
+                                                                        <label for="EditTicketCustomerSelect" class="col-sm-4 control-label">Select Customer:</label>
                                                                         <div class="col-sm-10">
-                                                                            <select id="Customer" class="form-control-sm" value="Customer">
-                                                                                <option>Customer1 Name DOB</option>
-                                                                                <option>Customer2 Name DOB</option>
-                                                                                <option>Customer3 Name DOB</option>
+                                                                            <select id="EditTicketCustomerSelect" class="form-control-sm" value="Customer">
                                                                             </select>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="ShowTime" class="col-sm-4 control-label">Pick Show-Time:</label>
+                                                                        <label for="EditTicketMovieSelect" class="col-sm-2 control-label">Movie:</label>
                                                                         <div class="col-sm-10">
-                                                                                <select id="ShowTime" class="form-control-sm" value="Show-Time">
-                                                                                        <option>DateTime 1</option>
-                                                                                        <option>DateTime 2</option>
-                                                                                        <option>DateTime 3</option>
+                                                                                <select id="EditTicketMovieSelect" class="form-control-sm" value="Movie">
+                                                                                    </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="EditTicketShowingSelect" class="col-sm-4 control-label">Pick Show-Time:</label>
+                                                                        <div class="col-sm-10">
+                                                                                <select id="EditTicketShowingSelect" class="form-control-sm" value="Show-Time">
                                                                                 </select>
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group">
-                                                                        <label for="Movie" class="col-sm-2 control-label">Movie:</label>
+                                                                        <label for="EditTicketPrice" class="col-sm-4 control-label">Price</label>
                                                                         <div class="col-sm-10">
-                                                                                <select id="Movie" class="form-control-sm" value="Movie">
-                                                                                        <option>Movie Title 1</option>
-                                                                                        <option>Movie Title 2</option>
-                                                                                        <option>Movie Title 3</option>
-                                                                                    </select>
+                                                                                <input type="number" id="EditTicketPrice" class="form-control-sm" value="">
                                                                         </div>
                                                                     </div>
                                                                 </form>
                                                             </div>
                                                             <!--footer-->
                                                             <div class="modal-footer">
-                                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                                                                <button type="button" class="btn btn-danger" id="EditTicketSubmit" data-dismiss="modal">Ok</button>
                                                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                                             </div>
                                                         </div>
@@ -720,6 +721,7 @@
                                                                 <th>Movie</th>                                                                
                                                                 <th>Customer Name</th>                                                                
                                                                 <th>Show Time</th>                                                                
+                                                                <th>Showing ID</th>                                                                
                                                                 <th>Price</th>                                                                
                                                             </tr>
                                                         </thead>

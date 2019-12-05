@@ -3,14 +3,17 @@
 // set up manage customer table and provide functions that interact with the table
 ///////////////////////////////
 
-// let showingID = null; // make variable for selected showing ID
-// let showingstheaterID = null;
-// let showingsmovieID = null;
-// let showingsroomID = null;
+
 let ticketID = 0;
+let ticketCustFName = "";
+let ticketCustLName = "";
+let ticketMovieName = "";
+let ticketShowingID = 0;
+
+
 function setupManageTickets(){
     $(document).ready( function () {
-      var manageTicketsTable = $('#manageTicketsTable').DataTable({
+      let manageTicketsTable = $('#manageTicketsTable').DataTable({
             scrollY: 300,
             paging: false,
             stateSave: true,
@@ -33,6 +36,7 @@ function setupManageTickets(){
                 {data: 'movie_name'},
                 {data: 'customer_name'},
                 {data: 'showtime'},
+                {data: 'showing_id'},
                 {data: 'price'}
             ]
         });
@@ -47,17 +51,20 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                 manageTicketsTable.$('tr.selected').removeClass('selected');
                 $(this).addClass('selected');
             }
-            showingID = manageTicketsTable.rows('.selected').data()[0].showing_id;
-            showingstheaterID = manageTicketsTable.rows('.selected').data()[0].theater_name;
-            showingsmovieID = manageTicketsTable.rows('.selected').data()[0].movie_name;
-            showingsroomID = manageTicketsTable.rows('.selected').data()[0].room_id;
-            
-            console.log(showingID); //testing
+            //get variables for all the items I need to fill select lists for add and edit modals. 
+            ticketID = manageTicketsTable.rows('.selected').data()[0].ticket_id;
+            let customerName = manageTicketsTable.rows('.selected').data()[0].customer_name; 
+            ticketCustFName = customerName.substr(0,customerName.indexOf(' ')); //get first name
+            ticketCustLName = customerName.substr(customerName.indexOf(' ') + 1); //get last name
+            ticketMovieName = manageTicketsTable.rows('.selected').data()[0].movie_name;
+            ticketShowingID = manageTicketsTable.rows('.selected').data()[0].showing_id;
+            console.log(ticketID); //testing
+            console.log(ticketMovieName);
         });
 
                    // pre-fill customer data into edit customer form
-                   $('#editShowingsBut').on('click', function(data){
-                    let url = 'http://flip1.engr.oregonstate.edu:2350/api/showings/' + showingID; //get URL for selected theater
+                   $('#editTicketBut').on('click', function(data){
+                    let url = 'http://flip1.engr.oregonstate.edu:2350/api/tickets/' + ticketID; //get URL for selected theater
                     $.ajax({// get selected room information back
                         dataType:'json',
                         "Content-Type": 'application/json',
@@ -72,18 +79,18 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         dataType : 'json',
                         "Content-Type": 'application/json',
                         method: 'GET',
-                        url: 'http://flip1.engr.oregonstate.edu:2350/api/theaters',
-                        success: fillTheaterList
+                        url: 'http://flip1.engr.oregonstate.edu:2350/api/customers',
+                        success: fillCustomerList
                     });
 
-                    function fillTheaterList(data){
-                        let selectList = $('#EditShowingTheaterSelect');
+                    function fillCustomerList(data){
+                        let selectList = $('#EditTicketCustomerSelect');
                         $.each(data, function(index, value){
-                            if(data[index].name == showingstheaterID){
-                                selectList.append('<option value= "' + data[index].theater_id + '" selected = "selected">' + data[index].name + ' </option>')
+                            if(data[index].lname == ticketCustLName && data[index].fname == ticketCustFName){
+                                selectList.append('<option value= "' + data[index].customer_id + '" selected = "selected">' + data[index].fname + ' ' + data[index].lname + ' </option>')
                             }
                             else{
-                                selectList.append('<option value= "' + data[index].theater_id + '">' + data[index].name + ' </option>')
+                                selectList.append('<option value= "' + data[index].customer_id + '">' + data[index].fname + ' ' + data[index].lname + ' </option>')
                             }
                         });
                     }
@@ -100,9 +107,10 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                     });
 
                     function fillMovieList(data){
-                        let selectList = $('#EditShowingMovieSelect');
+                        let selectList = $('#EditTicketMovieSelect');
                         $.each(data, function(index, value){
-                            if(data[index].movie_name == showingsmovieID){
+                            if(data[index].name == ticketMovieName){
+
                                 selectList.append('<option value= "' + data[index].movie_id + '" selected = "selected">' + data[index].name + ' </option>')
                             }
                             else{
@@ -115,58 +123,53 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         dataType : 'json',
                         "Content-Type": 'application/json',
                         method: 'GET',
-                        url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
+                        url: 'http://flip1.engr.oregonstate.edu:2350/api/showings',
                         headers:{
                             "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
                         },
-                        success: fillRoomList
+                        success: fillShowingList
                     });
-                    function fillRoomList(data){
-                        let selectList = $('#EditShowingRoomSelect');
+                    function fillShowingList(data){
+                        let selectList = $('#EditTicketShowingSelect');
                         $.each(data, function(index, value){
-                            if(data[index].room_id == showingsroomID){
-                                selectList.append('<option value= "' + data[index].room_id + '" selected = "selected">' + data[index].room_id + ' </option>')
+                            if(data[index].showing_id == ticketShowingID){
+                                selectList.append('<option value= "' + data[index].showing_id + '" selected = "selected">' + data[index].time + ' </option>')
                             }
-                            else{
-                                selectList.append('<option value= "' + data[index].room_id + '">' + data[index].room_id + ' </option>')
-                            }
+                            // else{
+                            //     selectList.append('<option value= "' + data[index].showing_id + '">' + data[index].time + ' </option>')
+                            // }
                         });
                     }
 
                     //ajax callback on sucess to fill form with selected room info
                     function updateEditForm(data){
-                        $('#EditShowingTheaterSelect').val(data.theater_id);
-                        $('#EditShowingMovieSelect').val(data.movie_id);
-                        $('#EditShowingRoomSelect').val(data.movie_id);
-                        $('#EditShowingTime').val(data.time);
+                        $('#EditTicketPrice').val(data.price);
                     }
                 });
 
 
 
-                $('#addShowingBut').on('click', function(data){
+                $('#addTicketBut').on('click', function(data){
                     $.ajax({
                         dataType : 'json',
                         "Content-Type": 'application/json',
                         method: 'GET',
-                        url: 'http://flip1.engr.oregonstate.edu:2350/api/theaters',
-                        headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
-                        },
-                        success: fillTheaterList
+                        url: 'http://flip1.engr.oregonstate.edu:2350/api/customers',
+                        success: fillCustomerList
                     });
 
-                    function fillTheaterList(data){
-                        let selectList = $('#AddShowingTheaterSelect');
+                    function fillCustomerList(data){
+                        let selectList = $('#AddTicketCustomer');
                         $.each(data, function(index, value){
-                            if(data[index].name == showingstheaterID){
-                                selectList.append('<option value= "' + data[index].theater_id + '" selected = "selected">' + data[index].name + ' </option>')
+                            if(data[index].lname == ticketCustLName && data[index].fname == ticketCustFName){
+                                selectList.append('<option value= "' + data[index].customer_id + '">' + data[index].fname + ' ' + data[index].lname + ' </option>')
                             }
                             else{
-                                selectList.append('<option value= "' + data[index].theater_id + '">' + data[index].name + ' </option>')
+                                selectList.append('<option value= "' + data[index].customer_id + '">' + data[index].fname + ' ' + data[index].lname + ' </option>')
                             }
                         });
                     }
+
                     $.ajax({
                         dataType : 'json',
                         "Content-Type": 'application/json',
@@ -175,14 +178,15 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         headers:{
                             "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
                         },
-                        success: fillMovieList
+                        success: fillTicketMovieList
                     });
 
-                    function fillMovieList(data){
-                        let selectList = $('#AddShowingMovieSelect');
+                    function fillTicketMovieList(data){
+                        let selectList = $('#AddTicketMovie');
                         $.each(data, function(index, value){
-                            if(data[index].movie_name == showingsmovieID){
-                                selectList.append('<option value= "' + data[index].movie_id + '" selected = "selected">' + data[index].name + ' </option>')
+                            if(data[index].name == ticketMovieName){
+
+                                selectList.append('<option value= "' + data[index].movie_id + '">' + data[index].name + ' </option>')
                             }
                             else{
                                 selectList.append('<option value= "' + data[index].movie_id + '">' + data[index].name + ' </option>')
@@ -190,43 +194,107 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         });
                     }
 
-                    $.ajax({
-                        dataType : 'json',
-                        "Content-Type": 'application/json',
-                        method: 'GET',
-                        url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
-                        headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
-                        },
-                        success: fillRoomList
-                    });
-                    function fillRoomList(data){
-                        let selectList = $('#AddShowingRoomSelect');
-                        $.each(data, function(index, value){
-                            if(data[index].room_id == showingsroomID){
-                                selectList.append('<option value= "' + data[index].room_id + '" selected = "selected">' + data[index].room_id + ' </option>')
-                            }
-                            else{
-                                selectList.append('<option value= "' + data[index].room_id + '">' + data[index].room_id + ' </option>')
-                            }
-                        });
-                    }
+                    // $.ajax({
+                    //     dataType : 'json',
+                    //     "Content-Type": 'application/json',
+                    //     method: 'GET',
+                    //     url: 'http://flip1.engr.oregonstate.edu:2350/api/showings',
+                    //     headers:{
+                    //         "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                    //     },
+                    //     success: fillShowingList
+                    // });
+                    // function fillShowingList(data){
+                    //     let selectList = $('#AddTicketShowTime');
+                    //     selectList.empty();
+                    //     $.each(data, function(index, value){
+                    //         if(data[index].showing_id == ticketShowingID){
+                    //             selectList.append('<option value= "' + data[index].showing_id + '" selected = "selected">' + data[index].time + ' </option>')
+                    //         }
+                    //         else{
+                    //             selectList.append('<option value= "' + data[index].showing_id + '">' + data[index].time + ' </option>')
+                    //         }
+                    //     });
+                    // }
                 });
 
     });
 }
 
+$(document).ready(function(){
+    //change showing selection to match the selected movie for the edit ticket menu
+    let $movieSelect = $('#EditTicketMovieSelect');
+
+    $movieSelect.on('change', function(){
+        let selectedID = this.value;
+        console.log(selectedID);
+        
+        $.ajax({
+            dataType : 'json',
+            "Content-Type": 'application/json',
+            method: 'GET',
+            url: 'http://flip1.engr.oregonstate.edu:2350/api/showings',
+            headers:{
+                "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+            },
+            success: fillShowingList
+        });
+        function fillShowingList(data){
+            let selectList = $('#EditTicketShowingSelect');
+            selectList.empty();
+            $.each(data, function(index, value){
+                if(data[index].movie_id == selectedID){
+                    selectList.append('<option value= "' + data[index].showing_id + '">' + data[index].time + ' </option>')
+                }
+            });
+        }
+        
+    }).trigger('change');
+});
+
+$(document).ready(function(){
+ //change showing selection to match the selected movie for the add ticket menu
+ let $movieAddSelect = $('#AddTicketMovie');
+
+    $movieAddSelect.on('change', function(){
+        let selectedMovieID = this.value;
+        console.log(selectedMovieID);
+        
+        $.ajax({
+            dataType : 'json',
+            "Content-Type": 'application/json',
+            method: 'GET',
+            url: 'http://flip1.engr.oregonstate.edu:2350/api/showings',
+            headers:{
+                "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+            },
+            success: fillShowingList
+        });
+        function fillShowingList(data){
+            let selectList = $('#AddTicketShowTime');
+            selectList.empty();
+            $.each(data, function(index, value){
+                if(data[index].movie_id == selectedMovieID){
+                    console.log('is this happening?')
+                    selectList.append('<option value= "' + data[index].showing_id + '">' + data[index].time + ' </option>')
+                }
+            });
+        }
+        
+    }).trigger('change');
+});
+
 // add new customer to DB
  $(document).ready(function(){   
-    $('#submitNewCustomerBut').on('click', function(data){
+    $('#AddTicketSubmit').on('click', function(data){
 
         console.log('you clicked submit!');// testing
 
             // fill variables with form data for ajax call
-            let fname = $('#addCustomerFirstName').val();
-            let lname = $('#addCustomerLastName').val();
-            let DOB = $('#addCustomerDOB').val();
-            let submitNewCust = "{\n    \"fname\": \"" + fname + "\",\n    \"lname\": \"" + lname + "\",\n    \"birthday\": \"" + DOB + "\"\n}";    
+            let customer = $('#AddTicketCustomer').val();
+            let showtime = $('#AddTicketShowTime').val();
+            let price = $('#AddTicketPrice').val();
+            let submitNewTicket = "{\"price\":" + price + ", \"showing_id\": " + showtime + ", \"customer_id\": " +  customer + "}";    
   
 
 
@@ -237,9 +305,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                 let timeOut = setTimeout(reload, 1000); //wait for results to update on the backend before refresh
 
                function reload(){ // reload datatable after adding customer
-                if(  $.fn.dataTable.isDataTable( '#manageShowingsTable' ) ){ // make sure table is active
+                if(  $.fn.dataTable.isDataTable( '#manageTicketsTable' ) ){ // make sure table is active
                  console.log("table is alive here");
-                   $('#manageShowingsTable').DataTable().ajax.reload();
+                   $('#manageTicketsTable').DataTable().ajax.reload();
                 }
                 else{
                  console.log("table is dead here");
@@ -253,7 +321,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
             'crossDomain': true,
             "async": true,
             "method": 'POST',
-            "url": 'http://flip1.engr.oregonstate.edu:2350/api/customers/',
+            "url": 'http://flip1.engr.oregonstate.edu:2350/api/tickets/',
             "Content-Type": 'application/json',
             "processData": false,
             "headers": {
@@ -261,31 +329,31 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                 "cache-control": "no-cache",
                 "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
               },
-            "data":  submitNewCust,
+            "data":  submitNewTicket,
             success: wroteData(data)
         })
     });
 
         // submit edited customer information
-        $('#EditShowingSubmitBut').on('click', function(data){
+        $('#EditTicketSubmit').on('click', function(data){
     
             console.log('you clicked submit!');// testing
     
-            let time = $('#EditShowingTime').val();
-            let roomID = $('#EditShowingRoomSelect').val();
-            let movieID = $('#EditShowingMovieSelect').val();
-            //let customerID is declared above
-            let submitUpdateShowing = "{\"showing_id\":" + showingID + ",  \"time\":\""  + time + "\", \"movie_id\":"  + movieID + ", \"room_id\":" + roomID + "}";
+            // fill variables with form data for ajax call
+            let customer = $('#EditTicketCustomerSelect').val();
+            let showtime = $('#EditTicketShowingSelect').val();
+            let price = $('#EditTicketPrice').val();
+            let submitUpdateTicket = "{\"ticket_id\":" + ticketID + ", \"price\":" + price + ", \"showing_id\": " + showtime + ", \"customer_id\": " +  customer + "}";    
                 
             // ajax callback and table refresh
-                console.log(submitUpdateShowing);
+                console.log(submitUpdateTicket);
     
             $.ajax({ // send data to backend through PATCH
                 'dataType': 'json',
                 'crossDomain': true,
                 "async": true,
                 "method": 'PATCH',
-                "url": 'http://flip1.engr.oregonstate.edu:2350/api/showings/',
+                "url": 'http://flip1.engr.oregonstate.edu:2350/api/tickets/',
                 // "Content-Type": 'application/json',
                 "processData": false,
                 "headers": {
@@ -293,7 +361,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                     "cache-control": "no-cache",
                     "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
                   },
-                "data":  submitUpdateShowing,
+                "data":  submitUpdateTicket,
                 success: wroteData(data)
             })
 
@@ -303,9 +371,9 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                 let timeOut = setTimeout(reload, 1000); //wait for results to update on the backend before refresh
 
                function reload(){ // reload datatable after adding customer
-                if(  $.fn.dataTable.isDataTable( '#manageShowingsTable' ) ){ // make sure table is active
+                if(  $.fn.dataTable.isDataTable( '#manageTicketsTable' ) ){ // make sure table is active
                  console.log("table is alive here");
-                   $('#manageShowingsTable').DataTable().ajax.reload();
+                   $('#manageTicketsTable').DataTable().ajax.reload();
                 }
                 else{
                  console.log("table is dead here");

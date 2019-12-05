@@ -39,12 +39,12 @@ pub struct RatingIr(&'static str);
 impl ConvIr<Rating> for RatingIr {
     fn new(v: Value) -> Result<RatingIr, FromValueError> {
         match v {
-            Value::Bytes(bytes) => match bytes {
-                s if s == b"E" => Ok(RatingIr("E")),
-                s if s == b"PG" => Ok(RatingIr("PG")),
-                s if s == b"PG13" => Ok(RatingIr("PG13")),
-                s if s == b"R" => Ok(RatingIr("R")),
-                s if s == b"AO" => Ok(RatingIr("AO")),
+            Value::Bytes(bytes) => match bytes.as_slice() {
+                b"E" => Ok(RatingIr("E")),
+                b"PG" => Ok(RatingIr("PG")),
+                b"PG13" => Ok(RatingIr("PG13")),
+                b"R" => Ok(RatingIr("R")),
+                b"AO" => Ok(RatingIr("AO")),
                 _ => Err(FromValueError(Value::Bytes(bytes))),
             },
             Value::NULL => Ok(RatingIr("NULL")),
@@ -161,7 +161,7 @@ impl RowTranslation for DetailedShowing {
     fn translate(row: Row) -> Self {
         let (showing_id, time, room_id, movie_name, theater_name, theater_id) =
             mysql::from_row(row);
-        DetailedShowing {
+        Self {
             showing_id,
             time,
             room_id,
@@ -186,7 +186,7 @@ pub struct Theater {
 impl RowTranslation for Theater {
     fn translate(row: Row) -> Self {
         let (theater_id, name, address, address_two, city, state, zip) = mysql::from_row(row);
-        Theater {
+        Self {
             theater_id,
             name,
             address,
@@ -225,12 +225,14 @@ pub struct DetailedTicket {
     pub movie_name: Option<String>,
     pub customer_name: Option<String>,
     pub showtime: Option<NaiveDateTime>,
+    pub showing_id: Option<u64>,
     pub price: Option<f64>,
 }
 
 impl RowTranslation for DetailedTicket {
     fn translate(row: Row) -> Self {
-        let (ticket_id, price, room_id, customer_name, showtime, movie_name) = mysql::from_row(row);
+        let (ticket_id, price, room_id, customer_name, showtime, movie_name, showing_id) =
+            mysql::from_row(row);
         Self {
             ticket_id,
             price,
@@ -238,6 +240,7 @@ impl RowTranslation for DetailedTicket {
             customer_name,
             showtime,
             movie_name,
+            showing_id,
         }
     }
 }

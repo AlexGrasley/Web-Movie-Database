@@ -16,7 +16,10 @@ pub fn select_thing_by_id<T: RowTranslation>(
             let mut items = results.into_iter();
             items.next().into_result().map_err(|_| 404)
         }
-        Err(e) => { eprintln!("Error Occurred Selecting thing by ID: {:?}", e); Err(500) },
+        Err(e) => {
+            eprintln!("Error Occurred Selecting thing by ID: {:?}", e);
+            Err(500)
+        }
     }
 }
 
