@@ -12,7 +12,11 @@ mod theater;
 mod tickets;
 
 use mysql;
-use rocket::{self, get, http::uri::Origin, options, routes, Data, Method, Response};
+use rocket::{
+    self, get,
+    http::{uri::Origin, Method},
+    options, routes, Data, Response,
+};
 use rocket_contrib::database;
 
 use customers::*;
