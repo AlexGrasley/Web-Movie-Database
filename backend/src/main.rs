@@ -147,7 +147,7 @@ impl Fairing for RedirectOptions {
 
     fn on_request(&self, request: &mut Request, _: &Data) {
         if request.method() == Method::Options {
-            request.set_uri(Origin::parse("/").unwrap());
+            request.set_uri(Origin::parse("/api").unwrap());
         }
     }
 }
