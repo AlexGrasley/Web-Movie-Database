@@ -55,10 +55,10 @@ function setupManageTheaters(){
                     function updateEditForm(data){
                         $('#TheaterNameUpdate').val(data.name);
                         $('#TheaterAddressUpdate').val(data.address);
-                        $('#Address2').val(data.address_two);
-                        $('#City').val(data.city);
-                        $('#State').val(data.state);
-                        $('#Zip').val(data.zip);
+                        $('#TheaterAddress2Update').val(data.address_two);
+                        $('#TheaterCityUpdate').val(data.city);
+                        $('#TheaterStateUpdate').val(data.state);
+                        $('#TheaterZipUpdate').val(data.zip);
                     }
                 });
 
