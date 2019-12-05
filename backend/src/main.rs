@@ -12,7 +12,11 @@ mod theater;
 mod tickets;
 
 use mysql;
-use rocket::{self, get, routes};
+use rocket::{
+    self, get,
+    http::{uri::Origin, Method},
+    options, routes, Data, Response,
+};
 use rocket_contrib::database;
 
 use customers::*;
@@ -28,7 +32,10 @@ pub struct DBConn(mysql::Conn);
 
 fn main() {
     rocket::ignite()
-        .mount("/api", routes![ping, create_tables, drop_tables, insert])
+        .mount(
+            "/api",
+            routes![ping, create_tables, drop_tables, insert, options_handler],
+        )
         .mount(
             "/api/movies",
             routes![
@@ -94,19 +101,27 @@ fn main() {
             ],
         )
         .attach(DBConn::fairing())
+        .attach(RedirectOptions)
         .attach(ControlAllowOrigin)
-        .attach(ControlAllowMethods)
         .launch();
 }
 
+#[options("/")]
+fn options_handler<'a>() -> Response<'a> {
+    Response::build()
+        .raw_header("Access-Control-Allow-Methods", "*")
+        .raw_header("Access-Control-Allow-Headers", "*")
+        .finalize()
+}
+
 use rocket::fairing::{Fairing, Info, Kind};
-use rocket::{Request, Response};
+use rocket::Request;
 
 struct ControlAllowOrigin;
 impl Fairing for ControlAllowOrigin {
     fn info(&self) -> Info {
         Info {
-            name: "ControlAlloworigin Header",
+            name: "ControlAllowOrigin Header",
             kind: Kind::Response,
         }
     }
@@ -120,18 +135,18 @@ impl Fairing for ControlAllowOrigin {
     }
 }
 
-struct ControlAllowMethods;
-impl Fairing for ControlAllowMethods {
+struct RedirectOptions;
+impl Fairing for RedirectOptions {
     fn info(&self) -> Info {
         Info {
-            name: "ControlAllowMethods Header",
-            kind: Kind::Response,
+            name: "RedirectOptions Header",
+            kind: Kind::Request,
         }
     }
 
-    fn on_response(&self, req: &Request, response: &mut Response) {
-        if req.method() == rocket::http::Method::Options {
-            response.adjoin_raw_header("Access-Control-Allow-Methods", "OPTIONS, POST, PATCH, GET");
+    fn on_request(&self, request: &mut Request, _: &Data) {
+        if request.method() == Method::Options {
+            request.set_uri(Origin::parse("/api").unwrap());
         }
     }
 }
