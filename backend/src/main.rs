@@ -12,7 +12,7 @@ mod theater;
 mod tickets;
 
 use mysql;
-use rocket::{self, get, routes};
+use rocket::{self, get, options, routes, Response};
 use rocket_contrib::database;
 
 use customers::*;
@@ -100,9 +100,7 @@ fn main() {
         .launch();
 }
 
-use rocket::route;
-use rocket::Response;
-#[route(OPTIONS, path = "*")]
+#[options("/*")]
 fn options_handler<'a>() -> Response<'a> {
     Response::build()
         .raw_header(
