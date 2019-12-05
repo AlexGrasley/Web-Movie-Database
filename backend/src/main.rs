@@ -106,7 +106,25 @@ struct ControlAllowOrigin;
 impl Fairing for ControlAllowOrigin {
     fn info(&self) -> Info {
         Info {
-            name: "ControlAlloworigin Header",
+            name: "ControlAllowOrigin Header",
+            kind: Kind::Response,
+        }
+    }
+
+    fn on_response(&self, _: &Request, response: &mut Response) {
+        // response.adjoin_raw_header(
+        //     "Access-Control-Allow-Origin",
+        //     "http://web.engr.oregonstate.edu",
+        // );
+        response.adjoin_raw_header("Access-Control-Allow-Origin", "*");
+    }
+}
+
+struct ControlExposeHeaders;
+impl Fairing for ControlExposeHeaders {
+    fn info(&self) -> Info {
+        Info {
+            name: "ControlExposeHeaders Header",
             kind: Kind::Response,
         }
     }
