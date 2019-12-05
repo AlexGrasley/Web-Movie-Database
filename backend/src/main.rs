@@ -95,6 +95,7 @@ fn main() {
         )
         .attach(DBConn::fairing())
         .attach(ControlAllowOrigin)
+        .attach(ControlAllowMethods)
         .launch();
 }
 
@@ -115,6 +116,22 @@ impl Fairing for ControlAllowOrigin {
             "Access-Control-Allow-Origin",
             "http://web.engr.oregonstate.edu",
         );
+    }
+}
+
+struct ControlAllowMethods;
+impl Fairing for ControlAllowMethods {
+    fn info(&self) -> Info {
+        Info {
+            name: "ControlAllowMethods Header",
+            kind: Kind::Response,
+        }
+    }
+
+    fn on_response(&self, req: &Request, response: &mut Response) {
+        if req.method() == rocket::http::Method::Options {
+            response.adjoin_raw_header("Access-Control-Allow-Methods", "OPTIONS, POST, PATCH, GET");
+        }
     }
 }
 
