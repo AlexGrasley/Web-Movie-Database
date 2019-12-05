@@ -23,7 +23,7 @@ function setupManageShowings(){
                 "url":'http://flip1.engr.oregonstate.edu:2350/api/showings/detailed/',
                 "method":'GET',
                 headers:{
-                    "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                    
                 },
                 "dataSrc": ''
             },
@@ -66,7 +66,7 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         "method":'GET',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+
                         },
                         "url": url,
                         success: updateEditForm // data came back, prefill edit form
@@ -76,7 +76,7 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
                         },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/theaters',
                         success: fillTheaterList
@@ -100,7 +100,7 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
                         },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms/' + showingsroomID,
                         success: fillRoomList
@@ -126,7 +126,7 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
                         },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/movies',
                         success: fillMovieList
@@ -162,7 +162,7 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
                         },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/theaters',
                         success: fillTheaterList
@@ -208,7 +208,7 @@ $('#manageShowingsTable tbody').on('click','tr', function(){
                         "Content-Type": 'application/json',
                         method: 'GET',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
                         },
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/movies',
                         success: fillMovieList
@@ -244,7 +244,7 @@ $theaterSelect.on('change', function(){
         "Content-Type": 'application/json',
         method: 'GET',
         headers:{
-            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+            
         },
         url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
         success: fillRoomList
@@ -275,7 +275,7 @@ $(document).ready(function(){
             "Content-Type": 'application/json',
             method: 'GET',
             headers:{
-                "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                
             },
             url: 'http://flip1.engr.oregonstate.edu:2350/api/rooms',
             success: fillRoomList

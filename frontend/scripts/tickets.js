@@ -26,7 +26,6 @@ function setupManageTickets(){
                 "url":'http://flip1.engr.oregonstate.edu:2350/api/tickets/detailed/',
                 "method":'GET',
                 headers:{
-                    "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
                 },
                 "dataSrc": ''
             },
@@ -71,7 +70,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         "method":'GET',
                         "url": url,
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
                         },
                         success: updateEditForm // data came back, prefill edit form
                     });
@@ -101,7 +100,8 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         method: 'GET',
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/movies',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
+                            
                         },
                         success: fillMovieList
                     });
@@ -125,7 +125,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         method: 'GET',
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/showings',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
                         },
                         success: fillShowingList
                     });
@@ -176,7 +176,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                         method: 'GET',
                         url: 'http://flip1.engr.oregonstate.edu:2350/api/movies',
                         headers:{
-                            "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                            
                         },
                         success: fillTicketMovieList
                     });
@@ -200,7 +200,7 @@ $('#manageTicketsTable tbody').on('click','tr', function(){
                     //     method: 'GET',
                     //     url: 'http://flip1.engr.oregonstate.edu:2350/api/showings',
                     //     headers:{
-                    //         "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                    //         
                     //     },
                     //     success: fillShowingList
                     // });
@@ -235,7 +235,7 @@ $(document).ready(function(){
             method: 'GET',
             url: 'http://flip1.engr.oregonstate.edu:2350/api/showings',
             headers:{
-                "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                
             },
             success: fillShowingList
         });
@@ -266,7 +266,7 @@ $(document).ready(function(){
             method: 'GET',
             url: 'http://flip1.engr.oregonstate.edu:2350/api/showings',
             headers:{
-                "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                
             },
             success: fillShowingList
         });
@@ -327,7 +327,7 @@ $(document).ready(function(){
             "headers": {
                 "Content-Type": "application/json",
                 "cache-control": "no-cache",
-                "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                
               },
             "data":  submitNewTicket,
             success: wroteData(data)
@@ -359,7 +359,7 @@ $(document).ready(function(){
                 "headers": {
                     "Content-Type": "application/json",
                     "cache-control": "no-cache",
-                    "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+                    
                   },
                 "data":  submitUpdateTicket,
                 success: wroteData(data)
@@ -416,7 +416,7 @@ $(document).ready(function(){
           "headers": {
               "Content-Type": "application/json",
               "cache-control": "no-cache",
-              "Access-Control-Allow-Origin": 'https://flip1.engr.oregonstate.edu'
+              
             },
           success: wroteData(data)
       })
