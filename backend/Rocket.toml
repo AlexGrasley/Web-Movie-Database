@@ -1,3 +1,5 @@
 [global.databases]
 # IP of classmysql.engr.oregonstate.edu
 mariadb = { url = "mysql://cs340_sasol:2492@10.193.48.79/cs340_sasol", pool_size = 1 }
+address = "0.0.0.0"
+port = 2350
